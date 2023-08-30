@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Signin = ({ isUser, setIsUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -19,6 +21,7 @@ const Signin = ({ isUser, setIsUser }) => {
 
     setEmail("");
     setPassword("");
+    router.push("/dashboard");
 
     // Add any additional logic you want to perform on form submission
   };
@@ -35,7 +38,7 @@ const Signin = ({ isUser, setIsUser }) => {
             name="email"
             value={email}
             onChange={handleEmailChange}
-            required
+            // required
             placeholder="Enter Your Email"
             className="w-full h-[50px] mb-[18px] text-[14px] bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] pl-[21.7px]"
           />
@@ -44,7 +47,7 @@ const Signin = ({ isUser, setIsUser }) => {
             name="password"
             value={password}
             onChange={handlePasswordChange}
-            required
+            // required
             placeholder="Enter Your Password"
             className="w-full h-[50px] mb-[8px] text-[14px] bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] pl-[21.7px]"
           />
