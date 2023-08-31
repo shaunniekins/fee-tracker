@@ -14,7 +14,7 @@ export default function SigninRoute() {
           src="lco-logo-enhanced.svg"
           alt="LCO Logo"
         />
-        <h2 className="text-white font-[600]">LCO Monitoring System</h2>
+        <h2 className="text-white font-[600]">LCO Fee Collection</h2>
       </Link>
       <div className="w-full flex justify-center px-5">
         <Signin isUser={isUser} setIsUser={setIsUser} />

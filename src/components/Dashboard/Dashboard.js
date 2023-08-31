@@ -25,29 +25,75 @@ const Dashboard = () => {
     setShowData(!showData);
   };
 
-  /**
-   * Change condition here:
-   * - to check if id number exists in school year selected (and to check if semester selected is already paid), prompt will show
-   * -
-   */
   const handleEnterKey = (event) => {
     if (event.key === "Enter") {
-      // Check if the ID number already exists in data
-      if (data.some((item) => item.id_num === idNumber)) {
-        alert("ID number already exists!");
+      event.preventDefault(); // Prevent the default form submission behavior
+
+      const schoolYear = document.getElementById("school_year").value;
+      const semester = document.getElementById("semester").value;
+
+      if (idNumber.length !== 9) {
+        alert("ID number inputted is short.");
+        return;
+      }
+
+      const existingStudent = data.find((item) => item.id_num === idNumber);
+
+      if (existingStudent) {
+        if (
+          semester === "2nd Semester" &&
+          existingStudent.first_sem !== "true"
+        ) {
+          alert("Student needs to pay the first semester first.");
+        } else if (
+          semester === "2nd Semester" &&
+          existingStudent.second_sem === "true"
+        ) {
+          alert("Student already paid for both semesters.");
+        } else if (
+          semester === "2nd Semester" &&
+          existingStudent.first_sem === "true" &&
+          existingStudent.second_sem !== "true"
+        ) {
+          // Update existing student's data for 2nd semester
+          existingStudent.second_sem = "true";
+          existingStudent.second_sem_date = new Date()
+            .toISOString()
+            .slice(0, 10);
+          existingStudent.date_last_modified = existingStudent.second_sem_date;
+          setIdNumber("");
+        } else if (
+          semester === "1st Semester" &&
+          existingStudent.first_sem === "true"
+        ) {
+          alert("Student already paid for the first semester.");
+        } else if (
+          semester === "1st Semester" &&
+          existingStudent.first_sem !== "true"
+        ) {
+          alert("Student needs to pay the first semester.");
+        }
       } else {
-        // Add the new data to the data array
-        data.push({
-          id_num: idNumber,
-          school_year: document.getElementById("school_year").value,
-          first_sem: document.getElementById("first_sem").value,
-          first_sem_date: "",
-          second_sem: "unpaid",
-          second_sem_date: "",
-          college: document.getElementById("college").value,
-          date_last_modified: new Date().toISOString().slice(0, 10),
-        });
-        setIdNumber("");
+        if (semester === "2nd Semester") {
+          alert("Student needs to pay the first semester first.");
+        } else {
+          // Add new student's data for 1st semester
+          const newStudent = {
+            id_num: idNumber,
+            school_year: schoolYear,
+            first_sem: semester === "1st Semester" ? "true" : "false",
+            first_sem_date:
+              semester === "1st Semester"
+                ? new Date().toISOString().slice(0, 10)
+                : "",
+            second_sem: semester === "2nd Semester" ? "unpaid" : "false",
+            second_sem_date: "",
+            college: document.getElementById("college").value,
+            date_last_modified: new Date().toISOString().slice(0, 10),
+          };
+          data.push(newStudent);
+          setIdNumber("");
+        }
       }
     }
   };

@@ -88,14 +88,14 @@ const TableData = ({ showData, setShowData }) => {
                 </th>
                 <td className="px-6 py-4">{item.school_year}</td>
                 <td className="px-6 py-4">
-                  {item.first_sem}
+                  {item.first_sem === "true" ? "paid" : "unpaid"}
                   {<br />}
                   <span className="text-purple-900 italic">
                     {item.first_sem_date}
                   </span>
                 </td>
                 <td className="px-6 py-4">
-                  {item.second_sem}
+                  {item.second_sem === "true" ? "paid" : "unpaid"}
                   {<br />}
                   <span className="text-purple-900 italic">
                     {item.second_sem_date}
