@@ -47,10 +47,14 @@ const Dashboard = () => {
     const semester = document.getElementById("semester").value;
 
     if (idNumber.length !== 9) {
-      setIndicatorMsg("ID number inputted is short."); // Update indicator message
-      setIndicatorStatus(false); // Update indicator status
-      handleTimeout();
-      return;
+      if (idNumber.length === 0) {
+        return;
+      } else {
+        setIndicatorMsg("ID number inputted is short.");
+        setIndicatorStatus(false);
+        handleTimeout();
+        return;
+      }
     }
 
     const { data: existingStudentData } = await fetchStudentData();

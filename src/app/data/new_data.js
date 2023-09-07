@@ -28,7 +28,7 @@ export const insertStudentData = async (rowData) => {
       console.error("Error inserting student data:", error);
       return { data: null, error };
     } else {
-      console.log("Successfully inserted student data:", data);
+      // console.log("Successfully inserted student data:", data);
       return { data, error: null };
     }
   } catch (error) {
@@ -50,7 +50,7 @@ export const updateStudentData = async (idNum, schoolYear, updateData) => {
       console.error("Error updating student data:", error);
       return { data: null, error };
     } else {
-      console.log("Successfully updated student data:", data);
+      // console.log("Successfully updated student data:", data);
       return { data, error: null };
     }
   } catch (error) {

@@ -47,33 +47,43 @@ const TableData = () => {
     fetchData();
   }, []);
 
+  const trueCountFirstSem = filteredData.filter(
+    (item) => item.first_sem
+  ).length;
+  const trueCountSecondSem = filteredData.filter(
+    (item) => item.second_sem
+  ).length;
+
+  // Calculate the total by multiplying the counts by 100
+  const total = (trueCountFirstSem + trueCountSecondSem) * 100;
+
   return (
     <div className="w-screen h-screen flex flex-col">
       <Navbar />
-      <div className="flex flex-col py-3 px-4 mb-6 xl:py-5 sm:px-8 lg:px-16 xl:px-24 shadow-md sm:rounded-lg">
-        <div className="flex flex-col md:flex-row gap-y-[25px] md:gap-y-0 md:gap-x-[25px] mb-[25px] select-none">
-          <input
-            value={idNumber}
-            onChange={handleChange}
-            className="rounded-3xl py-[10px] border-2 border-[#357112] text-center"
-            type="text"
-            name="search"
-            id="search"
-            placeholder="Search ID Number"
-          />
-          <button
-            // onClick={handleButtonClick}
-            className="bg-[#357112] rounded-3xl py-[10px] px-[50px] text-white">
-            Filter
-          </button>
-          {/* <button
-            // onClick={handleButtonClick}
-            className="w-full bg-[#357112] rounded-3xl py-[25px] px-[50px] text-white grow-[1]">
-            Pay
-          </button> */}
+      <div className="w-full flex flex-col py-3 px-4 mb-6 xl:py-5 sm:px-8 lg:px-16 xl:px-24 shadow-md sm:rounded-lg">
+        <div className="w-full flex justify-between flex-col md:flex-row gap-y-[10px] md:gap-y-0 mb-[25px] select-none">
+          <div className="flex items-center gap-x-[10px] md:gap-x-[25px]">
+            <input
+              value={idNumber}
+              onChange={handleChange}
+              className="w-full rounded-3xl py-[10px] border-2 border-[#357112] text-center"
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Search ID Number"
+            />
+            <button
+              // onClick={handleButtonClick}
+              className="bg-[#357112] rounded-3xl py-[10px] px-[50px] text-white">
+              Filter
+            </button>
+          </div>
+          <p className="bg-[#357112] rounded-3xl py-[10px] px-[30px] text-white">
+            Total: {total}
+          </p>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-center">
+        <div className="overflow-x-auto rounded-t-3xl">
+          <table className="w-full text-sm text-center ">
             <thead className="text-xs uppercase bg-[#357112] text-white">
               <tr>
                 {headerNames.map((header, index) => (
@@ -122,17 +132,17 @@ const TableData = () => {
                   </tr>
                 ))}
             </tbody>
-            <tfoot>
+            {/* <tfoot>
               <tr className="font-semibold text-gray-900 bg-green-100">
-                <th scope="row" className="px-3 py-2 sm:px-4 sm:py-3">
+                <th scope="row" className="px-3 py-2 sm:px-4 sm:py-3 text-left">
                   Total
                 </th>
                 <td className="px-6 py-2">{""}</td>
                 <td className="px-6 py-2">{""}</td>
                 <td className="px-6 py-2">{""}</td>
-                <td className="px-6 py-2 text-right">21,000</td>
+                <td className="px-6 py-2 text-right">{total}</td>
               </tr>
-            </tfoot>
+            </tfoot> */}
           </table>
         </div>
       </div>
