@@ -77,13 +77,18 @@ const Dashboard = () => {
       ) {
         // Update existing student's data for 2nd semester
         const now = new Date();
+
+        const localDate = now.toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+
         const updateData = {
           second_sem: true,
-          second_sem_date: now.toISOString().slice(0, 10),
-          second_sem_time: now.toTimeString().slice(0, 8),
-          date_last_modified: `${now.toISOString().slice(0, 10)} ${now
-            .toTimeString()
-            .slice(0, 8)}`,
+          second_sem_date: localDate,
+          second_sem_time: now.toLocaleTimeString(),
+          date_last_modified: `${localDate} ${now.toLocaleTimeString()}`,
         };
         await updateStudentData(idNumber, schoolYear, updateData);
 
@@ -114,29 +119,27 @@ const Dashboard = () => {
       } else {
         // Add new student's data for 1st semester
         const now = new Date();
+
+        // Get the current date in the user's local time zone
+        const localDate = now.toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+
         const newStudent = {
           id_num: idNumber,
           school_year: schoolYear,
           first_sem: semester === "1st Semester" ? true : false,
-          first_sem_date:
-            semester === "1st Semester" ? now.toISOString().slice(0, 10) : null,
-          first_sem_time:
-            semester === "1st Semester" ? now.toTimeString().slice(0, 8) : null,
+          first_sem_date: localDate,
+          first_sem_time: now.toLocaleTimeString(),
           second_sem: false,
           second_sem_date: null,
           second_sem_time: null,
           college: document.getElementById("college").value,
-          date_last_modified:
-            semester === "1st Semester"
-              ? `${now.toISOString().slice(0, 10)} ${now
-                  .toTimeString()
-                  .slice(0, 8)}`
-              : now.toISOString().slice(0, 10),
+          date_last_modified: `${localDate} ${now.toLocaleTimeString()}`,
         };
 
-        // console.log(newStudent);
-
-        // data.push(newStudent);
         await insertStudentData(newStudent);
         setIdNumber("");
         setIndicatorMsg("Paid successfully");
