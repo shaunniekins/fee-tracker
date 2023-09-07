@@ -27,11 +27,12 @@ const Signin = ({ isUser, setIsUser }) => {
   };
 
   return (
-    <div className="w-full bg-white md:w-[500px] px-5 py-10 flex flex-col items-center rounded-2xl backdrop-blur-2xl shadow-2xl">
+    <div className="w-full bg-white md:w-[500px] px-5 py-10 flex flex-col items-center rounded-2xl backdrop-blur-2xl shadow-2xl font-Montserrat">
       <h1 className="text-black text-[24px] font-bold mb-[31px]">Sign In</h1>
       <div className="w-full flex-col justify-center items-start">
         <form
           onSubmit={handleSubmit}
+          method="post"
           className="flex-col justify-start items-start flex">
           <input
             type="email"
