@@ -66,8 +66,6 @@ const TableData = () => {
       } else {
         setData(student_data);
 
-        console.log("student data: ", student_data);
-
         // Extract unique college and school_year values
         const uniqueColleges = [
           ...new Set(student_data.map((item) => item.college)),
@@ -96,6 +94,47 @@ const TableData = () => {
 
   // Calculate the total by multiplying the counts by 100
   const total = (trueCountFirstSem + trueCountSecondSem) * 100;
+
+  const handleExportToCSV = () => {
+    // Get the current date in the format YYYY/MM/DD
+    const currentDate = new Date().toISOString().slice(0, 10);
+
+    // Create a file name with the current date
+    const fileName = `[${currentDate}] - LCO Fee Student List.csv`;
+
+    // Convert data to CSV format with the specified column order
+    const csvData = [
+      "ID Number,First Semester,First Semester Date,Second Semester,Second Semester Date,College",
+      ...filteredData.map((item) =>
+        [
+          `"${item.id_num}"`,
+          `"${item.first_sem === true ? "paid" : "unpaid"}"`,
+          `"${item.first_sem_date}"`,
+          `"${item.second_sem === true ? "paid" : "unpaid"}"`,
+          `"${item.second_sem_date}"`,
+          `"${item.college}"`,
+        ].join(",")
+      ),
+    ].join("\n");
+
+    // Create a Blob containing the CSV data
+    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+
+    const response = confirm("Do you want to download the CSV file?");
+
+    if (response) {
+      // Create a download link and trigger the download
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = url;
+      a.download = fileName; // Set the file name with the current date
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+  };
 
   return (
     <div className="w-screen h-screen flex flex-col">
@@ -129,9 +168,16 @@ const TableData = () => {
               ""
             )}
           </div>
-          <p className="bg-[#357112] rounded-3xl py-[10px] px-[30px] text-white">
-            Total: {total}
-          </p>
+          <div className="flex items-center gap-x-[10px] md:gap-x-[25px]">
+            <p className="bg-[#357112] rounded-3xl py-[10px] px-[30px] text-white">
+              Total: {total}
+            </p>
+            <button
+              className="border border-[#357112] rounded-3xl py-[10px] px-[20px]"
+              onClick={handleExportToCSV}>
+              ⏷
+            </button>
+          </div>
         </div>
         <div className="overflow-x-auto rounded-t-3xl">
           <table className="w-full text-sm text-center ">
