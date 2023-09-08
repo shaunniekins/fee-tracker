@@ -53,8 +53,37 @@ const Navbar = ({ qrScannerVisible, toggleQrScanner }) => {
     },
   ];
 
+  let pageTitle, pageDescription, logoUrl;
+
+  switch (pathname) {
+    case "/dashboard":
+      pageTitle = "Dashboard | LCO Fee Tracker";
+      pageDescription = "Dashboard";
+      logoUrl = "lco-logo-enhanced.svg";
+      break;
+    case "/history":
+      pageTitle = "History | LCO Fee Tracker";
+      pageDescription = "History";
+      logoUrl = "lco-logo-enhanced.svg";
+      break;
+    case "/dashboard/activity":
+      pageTitle = "Activity | LCO Fee Tracker";
+      pageDescription = "Activity";
+      logoUrl = "../lco-logo-enhanced.svg";
+      break;
+    default:
+      pageTitle = "LCO Fee Tracker";
+      pageDescription = "Track your fees with LCO Fee Tracker";
+      logoUrl = "lco-logo-enhanced.svg";
+      break;
+  }
+
   return (
     <>
+      <title>{pageTitle}</title>
+      <meta name="description" content={pageDescription} key="desc" />
+      <link rel="icon" href={logoUrl} />
+
       <div className="w-screen mt-5 hidden md:flex justify-center md:justify-end items-center px-5  font-Montserrat space-x-3 select-none">
         {buttons.map((button, index) =>
           button.condition ? (

@@ -139,7 +139,10 @@ const TableData = () => {
   return (
     <div className="w-screen h-screen flex flex-col">
       <Navbar />
-      <div className="w-full flex flex-col py-3 px-4 mb-6 xl:py-5 sm:px-8 lg:px-16 xl:px-24 sm:rounded-lg">
+      <div
+        className={`${
+          isModal ? "overflow-hidden" : "overflow-auto"
+        } w-full flex flex-col py-3 px-4 mb-6 xl:py-5 sm:px-8 lg:px-16 xl:px-24 sm:rounded-lg`}>
         <div className="w-full flex justify-between flex-col md:flex-row gap-y-[10px] md:gap-y-0 mb-[25px] select-none">
           <div className="flex items-center gap-x-[10px] md:gap-x-[25px]">
             <input
@@ -168,8 +171,8 @@ const TableData = () => {
               ""
             )}
           </div>
-          <div className="flex items-center gap-x-[10px] md:gap-x-[25px]">
-            <p className="bg-[#357112] rounded-3xl py-[10px] px-[30px] text-white">
+          <div className="flex items-center gap-x-[10px] md:gap-x-[25px] justify-end">
+            <p className="w-full bg-[#357112] rounded-3xl py-[10px] px-[30px] text-white">
               Total: {total}
             </p>
             <button
@@ -233,8 +236,8 @@ const TableData = () => {
         </div>
       </div>
       {isModal ? (
-        <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6">
+        <div className="z-50 fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-black bg-opacity-50">
+          <div className="w-full md:w-96 bg-white rounded-lg p-6 mx-5">
             <h2 className="text-xl font-semibold mb-4">Filter Options</h2>
             <div className="mb-4">
               <label htmlFor="schoolYear" className="block text-gray-600">
@@ -272,7 +275,6 @@ const TableData = () => {
                 ))}
               </select>
             </div>
-
             <button
               onClick={() => setIsModal(false)}
               className="bg-[#357112] text-white rounded-md p-2">
