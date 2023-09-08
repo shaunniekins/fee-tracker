@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import Indicator from "../Indicator/Indicator";
 import {
@@ -7,10 +7,18 @@ import {
   updateStudentData,
 } from "@/app/data/new_data";
 
+import QRCodeScanner from "../QrScanner/QrScanner";
+
 const Dashboard = () => {
   const [idNumber, setIdNumber] = useState("");
   const [indicatorMsg, setIndicatorMsg] = useState("");
   const [indicatorStatus, setIndicatorStatus] = useState(true);
+  const [qrScannerVisible, setQrScannerVisible] = useState(false);
+
+  const handleQRScan = (data) => {
+    setIdNumber(data);
+    setQrScannerVisible(false);
+  };
 
   const handleChange = (event) => {
     const inputValue = event.target.value;
@@ -155,66 +163,83 @@ const Dashboard = () => {
 
   return (
     <div className="w-screen h-screen flex flex-col">
-      <Navbar />
+      <Navbar
+        qrScannerVisible={qrScannerVisible}
+        toggleQrScanner={() => setQrScannerVisible(!qrScannerVisible)}
+      />
+
       <div className="flex flex-col flex-grow justify-center py-3  px-5 sm:px-10 lg:px-52 xl:px-96 font-Montserrat select-none">
         {indicatorMsg && (
           <Indicator msg={indicatorMsg} status={indicatorStatus} />
         )}
-        <div className="flex flex-col md:flex-row gap-y-[25px] md:gap-y-0 md:gap-x-[25px] mb-[25px] text-[20px]">
-          <input
-            className="w-full py-[25px] rounded-3xl border-2 border-[#357112] text-center"
-            type="text"
-            name="school_year"
-            id="school_year"
-            defaultValue={"2023-2024"}
-          />
-          <select
-            className="w-full py-[25px] rounded-3xl bg-transparent border-2 border-[#357112] text-center appearance-none"
-            id="semester"
-            name="semester">
-            <option value="1st Semester">1st Semester</option>
-            <option value="2nd Semester">2nd Semester</option>
-          </select>
-          <select
-            className="w-full py-[25px] rounded-3xl bg-transparent border-2 border-[#357112] text-center appearance-none"
-            id="college"
-            name="college">
-            <option value="CAA">CAA</option>
-            <option value="CCIS">CCIS</option>
-            <option value="CED">CED</option>
-            <option value="CEGS">CEGS</option>
-            <option value="CHASS">CHASS</option>
-            <option value="CMNS">CMNS</option>
-            <option value="COFES">COFES</option>
-          </select>
-          <div className="w-full"></div>
-        </div>
-        <input
-          type="text"
-          value={idNumber}
-          onChange={handleChange}
-          onKeyDown={handleEnterKey} // Call handleEnterKey on key down
-          placeholder="ID Number"
-          className="text-[40px] md:text-[50px] py-10 px-[40px] border-2 rounded-3xl border-[#357112] text-center md:text-right"
-        />
-        <div className="flex flex-col md:flex-row gap-y-[25px] md:gap-y-0 md:gap-x-[25px] mt-[25px]">
-          <div className="w-full hidden md:flex"></div>
-          <div className="w-full hidden md:flex"></div>
-          <div className="w-full hidden md:flex"></div>
-          <div className="w-full hidden md:flex"></div>
-          <div className="w-full hidden md:flex"></div>
-          {/* <button
+        {qrScannerVisible ? (
+          <div className="z-0 w-[100%] md:w-[500px] self-center font-Montserrat text-xl font-semibold">
+            <h2 className="text-center">Scan ID</h2>
+            {/* Render the QR Scanner component */}
+            <QRCodeScanner
+              onScan={(data) => handleQRScan(data)}
+              toggleQrScanner={() => setQrScannerVisible(!qrScannerVisible)}
+            />
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-col md:flex-row gap-y-[25px] md:gap-y-0 md:gap-x-[25px] mb-[25px] text-[20px]">
+              <input
+                className="w-full py-[25px] rounded-3xl border-2 border-[#357112] text-center"
+                type="text"
+                name="school_year"
+                id="school_year"
+                defaultValue={"2023-2024"}
+              />
+              <select
+                className="w-full py-[25px] rounded-3xl bg-transparent border-2 border-[#357112] text-center appearance-none"
+                id="semester"
+                name="semester">
+                <option value="1st Semester">1st Semester</option>
+                <option value="2nd Semester">2nd Semester</option>
+              </select>
+              <select
+                className="w-full py-[25px] rounded-3xl bg-transparent border-2 border-[#357112] text-center appearance-none"
+                id="college"
+                name="college">
+                <option value="CAA">CAA</option>
+                <option value="CCIS">CCIS</option>
+                <option value="CED">CED</option>
+                <option value="CEGS">CEGS</option>
+                <option value="CHASS">CHASS</option>
+                <option value="CMNS">CMNS</option>
+                <option value="COFES">COFES</option>
+              </select>
+              <div className="w-full"></div>
+            </div>
+            <input
+              type="text"
+              value={idNumber}
+              onChange={handleChange}
+              onKeyDown={handleEnterKey} // Call handleEnterKey on key down
+              placeholder="ID Number"
+              className="text-[40px] md:text-[50px] py-10 px-[40px] border-2 rounded-3xl border-[#357112] text-center md:text-right"
+            />
+            <div className="flex flex-col md:flex-row gap-y-[25px] md:gap-y-0 md:gap-x-[25px] mt-[25px]">
+              <div className="w-full hidden md:flex"></div>
+              <div className="w-full hidden md:flex"></div>
+              <div className="w-full hidden md:flex"></div>
+              <div className="w-full hidden md:flex"></div>
+              <div className="w-full hidden md:flex"></div>
+              {/* <button
             className="w-full order-2 md:order-6 bg-[#357112] rounded-3xl py-[25px] px-[50px] text-white "
             // onClick={handleShowData}
           >
             Show Data
           </button> */}
-          <button
-            className="w-full order-1 md:order-7 bg-green-600 hover:bg-red-400 rounded-3xl py-[25px] px-[50px] text-white"
-            onClick={handlePay}>
-            Pay
-          </button>
-        </div>
+              <button
+                className="w-full order-1 md:order-7 bg-green-600 hover:bg-red-400 rounded-3xl py-[25px] px-[50px] text-white"
+                onClick={handlePay}>
+                Pay
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

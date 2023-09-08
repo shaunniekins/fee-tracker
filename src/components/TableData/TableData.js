@@ -6,14 +6,25 @@ const TableData = () => {
   const [data, setData] = useState([]);
   const [idNumber, setIdNumber] = useState("");
   const [error, setError] = useState(null);
+  const [isFilterToggle, setIsFilterToggle] = useState(false);
+  const [isModal, setIsModal] = useState(false);
+  const [selectedCollege, setSelectedCollege] = useState("");
+  const [selectedSchoolYear, setSelectedSchoolYear] = useState("");
+  const [uniqueColleges, setUniqueColleges] = useState([]);
+  const [uniqueSchoolYears, setUniqueSchoolYears] = useState([]);
 
   const headerNames = [
     "ID Number",
-    "School Year",
+    // "School Year",
     "First Semester",
     "Second Semester",
     "College",
   ];
+
+  const handleFilterToggle = () => {
+    setIsFilterToggle(!isFilterToggle);
+    setIsModal(false);
+  };
 
   const handleChange = (event) => {
     const inputValue = event.target.value;
@@ -30,8 +41,21 @@ const TableData = () => {
     }
   };
 
-  // Filter data based on idNumber
-  const filteredData = data.filter((item) => item.id_num.includes(idNumber));
+  let filteredData;
+
+  if (isFilterToggle) {
+    filteredData = data.filter((item) => {
+      return (
+        item.id_num.includes(idNumber) &&
+        (selectedCollege === "" || item.college === selectedCollege) &&
+        (selectedSchoolYear === "" || item.school_year === selectedSchoolYear)
+      );
+    });
+  } else {
+    filteredData = data.filter((item) => {
+      return item.id_num.includes(idNumber);
+    });
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,6 +65,22 @@ const TableData = () => {
         setError(error);
       } else {
         setData(student_data);
+
+        console.log("student data: ", student_data);
+
+        // Extract unique college and school_year values
+        const uniqueColleges = [
+          ...new Set(student_data.map((item) => item.college)),
+        ];
+        const uniqueSchoolYears = [
+          ...new Set(student_data.map((item) => item.school_year)),
+        ];
+
+        setUniqueColleges(uniqueColleges);
+        setUniqueSchoolYears(uniqueSchoolYears);
+
+        setSelectedCollege(""); // Set default to an empty string
+        setSelectedSchoolYear(uniqueSchoolYears[0] || ""); // Set default to the first option
       }
     };
 
@@ -60,7 +100,7 @@ const TableData = () => {
   return (
     <div className="w-screen h-screen flex flex-col">
       <Navbar />
-      <div className="w-full flex flex-col py-3 px-4 mb-6 xl:py-5 sm:px-8 lg:px-16 xl:px-24 shadow-md sm:rounded-lg">
+      <div className="w-full flex flex-col py-3 px-4 mb-6 xl:py-5 sm:px-8 lg:px-16 xl:px-24 sm:rounded-lg">
         <div className="w-full flex justify-between flex-col md:flex-row gap-y-[10px] md:gap-y-0 mb-[25px] select-none">
           <div className="flex items-center gap-x-[10px] md:gap-x-[25px]">
             <input
@@ -73,10 +113,21 @@ const TableData = () => {
               placeholder="Search ID Number"
             />
             <button
-              // onClick={handleButtonClick}
-              className="bg-[#357112] rounded-3xl py-[10px] px-[50px] text-white">
+              onClick={handleFilterToggle}
+              className={`${
+                isFilterToggle ? "bg-purple-500" : "bg-[#357112]"
+              } rounded-3xl py-[10px] px-[50px] text-white`}>
               Filter
             </button>
+            {isFilterToggle ? (
+              <button
+                className="bg-pink-200 rounded-3xl py-[10px] px-[20px]"
+                onClick={() => setIsModal(!isModal)}>
+                ⏷
+              </button>
+            ) : (
+              ""
+            )}
           </div>
           <p className="bg-[#357112] rounded-3xl py-[10px] px-[30px] text-white">
             Total: {total}
@@ -113,7 +164,7 @@ const TableData = () => {
                       className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                       {item.id_num}
                     </th>
-                    <td className="px-6 py-4">{item.school_year}</td>
+                    {/* <td className="px-6 py-4">{item.school_year}</td> */}
                     <td className="px-6 py-4">
                       {item.first_sem === true ? "paid" : "unpaid"}
                       {<br />}
@@ -132,20 +183,60 @@ const TableData = () => {
                   </tr>
                 ))}
             </tbody>
-            {/* <tfoot>
-              <tr className="font-semibold text-gray-900 bg-green-100">
-                <th scope="row" className="px-3 py-2 sm:px-4 sm:py-3 text-left">
-                  Total
-                </th>
-                <td className="px-6 py-2">{""}</td>
-                <td className="px-6 py-2">{""}</td>
-                <td className="px-6 py-2">{""}</td>
-                <td className="px-6 py-2 text-right">{total}</td>
-              </tr>
-            </tfoot> */}
           </table>
         </div>
       </div>
+      {isModal ? (
+        <div className="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Filter Options</h2>
+            <div className="mb-4">
+              <label htmlFor="schoolYear" className="block text-gray-600">
+                School Year:
+              </label>
+              <select
+                id="schoolYear"
+                name="schoolYear"
+                className="w-full border border-gray-300 rounded-md p-2"
+                value={selectedSchoolYear}
+                onChange={(e) => setSelectedSchoolYear(e.target.value)}>
+                <option value="">All</option>
+                {uniqueSchoolYears.map((schoolYear, index) => (
+                  <option key={index} value={schoolYear}>
+                    {schoolYear}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="college" className="block text-gray-600">
+                College:
+              </label>
+              <select
+                id="college"
+                name="college"
+                className="w-full border border-gray-300 rounded-md p-2"
+                value={selectedCollege}
+                onChange={(e) => setSelectedCollege(e.target.value)}>
+                <option value="">All</option>
+                {uniqueColleges.map((college, index) => (
+                  <option key={index} value={college}>
+                    {college}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              onClick={() => setIsModal(false)}
+              className="bg-[#357112] text-white rounded-md p-2">
+              Done
+            </button>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };
