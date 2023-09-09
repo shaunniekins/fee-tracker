@@ -11,21 +11,19 @@ const QRCodeScanner = ({ onScan, toggleQrScanner }) => {
   }
 
   return (
-    <div>
-      <QrReader
-        onResult={(result, error) => {
-          if (!!result) {
-            setData(result?.text);
-          }
+    <QrReader
+      onResult={(result, error) => {
+        if (!!result) {
+          setData(result?.text);
+        }
 
-          if (!!error) {
-            console.info(error);
-          }
-        }}
-        style={{ width: "100%" }}
-      />
-      <p>{data}</p>
-    </div>
+        if (!!error) {
+          console.info(error);
+        }
+      }}
+      style={{ width: "100%" }}
+    />
+    // <p>{data}</p>
   );
 };
 

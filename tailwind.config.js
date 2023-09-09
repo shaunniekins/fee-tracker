@@ -14,6 +14,7 @@ module.exports = {
       },
       fontFamily: {
         Montserrat: ["Montserrat", "cursive"],
+        Roboto: ["Roboto", "cursive"],
       },
     },
     screens: {

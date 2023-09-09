@@ -168,12 +168,12 @@ const Dashboard = () => {
         toggleQrScanner={() => setQrScannerVisible(!qrScannerVisible)}
       />
 
-      <div className="flex flex-col flex-grow justify-center py-3  px-5 sm:px-10 lg:px-52 xl:px-96 font-Montserrat select-none">
+      <div className="flex flex-col flex-grow justify-center py-3 px-5 sm:px-10 lg:px-52 xl:px-96 font-Montserrat select-none">
         {indicatorMsg && (
           <Indicator msg={indicatorMsg} status={indicatorStatus} />
         )}
         {qrScannerVisible ? (
-          <div className="z-0 w-[100%] md:w-[500px] self-center font-Montserrat text-xl font-semibold">
+          <div className="z-0 w-[100%] md:w-[500px] mt-[-50px] self-center font-Montserrat text-xl font-semibold">
             <h2 className="text-center">Scan ID</h2>
             {/* Render the QR Scanner component */}
             <QRCodeScanner
@@ -233,7 +233,7 @@ const Dashboard = () => {
             Show Data
           </button> */}
               <button
-                className="w-full order-1 md:order-7 bg-green-600 hover:bg-red-400 rounded-3xl py-[25px] px-[50px] text-white"
+                className="w-full order-1 md:order-7 bg-[#357112] hover:bg-purple-500 rounded-3xl py-[25px] px-[50px] text-white"
                 onClick={handlePay}>
                 Pay
               </button>

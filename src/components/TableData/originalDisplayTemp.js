@@ -15,7 +15,7 @@ const TableData = () => {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [entriesPerPage, setEntriesPerPage] = useState(8);
+  const [entriesPerPage, setEntriesPerPage] = useState(9);
 
   const headerNames = [
     "ID Number",
@@ -139,26 +139,6 @@ const TableData = () => {
     }
   };
 
-  // Pagination functions
-  const indexOfLastEntry = currentPage * entriesPerPage;
-  const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
-  const currentEntries = filteredData.slice(
-    indexOfFirstEntry,
-    indexOfLastEntry
-  );
-
-  const handleNextPage = () => {
-    if (indexOfLastEntry < filteredData.length) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
   return (
     <div className="w-screen h-screen flex flex-col">
       <Navbar />
@@ -188,7 +168,7 @@ const TableData = () => {
               <button
                 className="bg-pink-200 rounded-3xl py-[10px] px-[20px]"
                 onClick={() => setIsModal(!isModal)}>
-                ▼
+                ⏷
               </button>
             ) : (
               ""
@@ -201,12 +181,12 @@ const TableData = () => {
             <button
               className="border border-[#357112] rounded-3xl py-[10px] px-[20px]"
               onClick={handleExportToCSV}>
-              ▼
+              ⏷
             </button>
           </div>
         </div>
-        <div className="w-full overflow-x-auto rounded-t-3xl">
-          <table className="w-full text-sm text-center">
+        <div className="overflow-x-auto rounded-t-3xl">
+          <table className="w-full text-sm text-center ">
             <thead className="text-xs uppercase bg-[#357112] text-white">
               <tr>
                 {headerNames.map((header, index) => (
@@ -220,7 +200,7 @@ const TableData = () => {
               </tr>
             </thead>
             <tbody>
-              {currentEntries
+              {filteredData
                 .sort((a, b) => {
                   return (
                     new Date(b.date_last_modified) -
@@ -233,20 +213,21 @@ const TableData = () => {
                     className="bg-white border-b border-green-700 hover:bg-green-300">
                     <th
                       scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap font-mono">
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                       {item.id_num}
                     </th>
+                    {/* <td className="px-6 py-4">{item.school_year}</td> */}
                     <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                       {item.first_sem === true ? "paid" : "unpaid"}
-                      <br />
-                      <span className="text-purple-900 italic font-mono">
+                      {<br />}
+                      <span className="text-purple-900 italic">
                         {item.first_sem_date}
                       </span>
                     </td>
                     <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                       {item.second_sem === true ? "paid" : "unpaid"}
-                      <br />
-                      <span className="text-purple-900 italic font-mono">
+                      {<br />}
+                      <span className="text-purple-900 italic">
                         {item.second_sem_date}
                       </span>
                     </td>
@@ -258,79 +239,57 @@ const TableData = () => {
             </tbody>
           </table>
         </div>
-        {isModal ? (
-          <div className="z-50 fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-black bg-opacity-50">
-            <div className="w-full flex flex-col md:w-96 bg-white rounded-lg p-6 mx-5">
-              <h2 className="text-xl font-semibold mb-4">Filter Options</h2>
-              <div className="mb-4">
-                <label htmlFor="schoolYear" className="block text-gray-600">
-                  School Year:
-                </label>
-                <select
-                  id="schoolYear"
-                  name="schoolYear"
-                  className="w-full border border-gray-300 rounded-md p-2"
-                  value={selectedSchoolYear}
-                  onChange={(e) => setSelectedSchoolYear(e.target.value)}>
-                  <option value="">All</option>
-                  {uniqueSchoolYears.map((schoolYear, index) => (
-                    <option key={index} value={schoolYear}>
-                      {schoolYear}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="mb-4">
-                <label htmlFor="college" className="block text-gray-600">
-                  College:
-                </label>
-                <select
-                  id="college"
-                  name="college"
-                  className="w-full border border-gray-300 rounded-md p-2"
-                  value={selectedCollege}
-                  onChange={(e) => setSelectedCollege(e.target.value)}>
-                  <option value="">All</option>
-                  {uniqueColleges.map((college, index) => (
-                    <option key={index} value={college}>
-                      {college}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <button
-                onClick={() => setIsModal(false)}
-                className="bg-[#357112] text-white rounded-md p-2 self-end">
-                Done
-              </button>
-            </div>
-          </div>
-        ) : (
-          ""
-        )}
-        <div className="w-full mt-4 flex self-end justify-end select-none">
-          <button
-            className={`${
-              currentPage === 1
-                ? "bg-white text-white"
-                : "bg-[#357112] text-white"
-            } rounded-3xl py-2 px-5 mx-2`}
-            onClick={handlePrevPage}
-            disabled={currentPage === 1}>
-            {`<`}
-          </button>
-          <button
-            className={`${
-              indexOfLastEntry >= filteredData.length
-                ? "bg-white text-white"
-                : "bg-[#357112] text-white"
-            } rounded-3xl py-2 px-5 mx-2`}
-            onClick={handleNextPage}
-            disabled={indexOfLastEntry >= filteredData.length}>
-            {`>`}
-          </button>
-        </div>
       </div>
+      {isModal ? (
+        <div className="z-50 fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-black bg-opacity-50">
+          <div className="w-full md:w-96 bg-white rounded-lg p-6 mx-5">
+            <h2 className="text-xl font-semibold mb-4">Filter Options</h2>
+            <div className="mb-4">
+              <label htmlFor="schoolYear" className="block text-gray-600">
+                School Year:
+              </label>
+              <select
+                id="schoolYear"
+                name="schoolYear"
+                className="w-full border border-gray-300 rounded-md p-2"
+                value={selectedSchoolYear}
+                onChange={(e) => setSelectedSchoolYear(e.target.value)}>
+                <option value="">All</option>
+                {uniqueSchoolYears.map((schoolYear, index) => (
+                  <option key={index} value={schoolYear}>
+                    {schoolYear}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="college" className="block text-gray-600">
+                College:
+              </label>
+              <select
+                id="college"
+                name="college"
+                className="w-full border border-gray-300 rounded-md p-2"
+                value={selectedCollege}
+                onChange={(e) => setSelectedCollege(e.target.value)}>
+                <option value="">All</option>
+                {uniqueColleges.map((college, index) => (
+                  <option key={index} value={college}>
+                    {college}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button
+              onClick={() => setIsModal(false)}
+              className="bg-[#357112] text-white rounded-md p-2">
+              Done
+            </button>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

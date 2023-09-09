@@ -144,7 +144,7 @@ const History = () => {
   return (
     <div className="w-screen h-screen flex flex-col overflow-x-hidden">
       <Navbar />
-      <div className="flex flex-col py-3 px-5 sm:px-10 lg:px-52 xl:px-[600px] font-Montserrat">
+      <div className="flex flex-col py-3 px-5 sm:px-10 lg:px-52 2xl:px-[600px] font-Montserrat">
         <div className="flex flex-col md:flex-row gap-y-[25px] md:gap-y-0 md:gap-x-[25px] w-full mb-[25px] select-none">
           <input
             value={idNumber}
@@ -161,33 +161,38 @@ const History = () => {
             <div
               key={dateKey}
               className="flex flex-col rounded-3xl border-2 border-[#357112] bg-green-100 p-5">
-              <div className="flex justify-between items-center">
-                <h4 className="font-semibold text-lg">
+              <div className="flex flex-col md:flex-row md:justify-between md:items-center">
+                <h4 className="font-semibold text-md md:text-lg">
                   {currentDate === formatDateString(dateKey)
                     ? `Today - ${formatDateString(dateKey)}`
                     : yesterdayDate === formatDateString(dateKey)
                     ? `Yesterday - ${formatDateString(dateKey)}`
                     : formatDateString(dateKey)}
                 </h4>
-
-                <p>Total: {filteredData[dateKey].length * 100}</p>
+                <p className="text-sm mt-3 md:mt-0 md:self-center">
+                  Total: {filteredData[dateKey].length * 100}
+                </p>
               </div>
               <div className="border-b-2 border-[#357112] my-3" />
               <div className="flex flex-col space-y-3">
                 {filteredData[dateKey].map((item, index) => (
                   <div
                     key={`${item.id_num}-${index}`}
-                    className="flex space-x-10 items-center">
-                    <p className="text-xs">
+                    className="flex space-x-5 sm:space-x-10 items-center">
+                    <p className="text-xs font-mono">
+                      {" "}
+                      {/* Use the monospaced font class */}
                       {item.semester === "First"
                         ? formatTimeString(item.first_sem_time)
                         : formatTimeString(item.second_sem_time)}
                     </p>
-                    <p>
-                      <span className="text-red-500 font-medium">
+                    <p className="space-x-2">
+                      <span className="text-purple-700 font-mono font-semibold">
                         {item.id_num}
                       </span>{" "}
-                      paid for the {item.semester.toLowerCase()} semester.
+                      <span className="font-Montserrat">
+                        paid for the {item.semester.toLowerCase()} semester.
+                      </span>
                     </p>
                   </div>
                 ))}
