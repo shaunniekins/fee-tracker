@@ -205,7 +205,7 @@ const TableData = () => {
             </button>
           </div>
         </div>
-        <div className="w-full overflow-x-auto rounded-t-3xl">
+        <div className="w-full overflow-x-auto rounded-t-3xl h-[70vh]">
           <table className="w-full text-sm text-center">
             <thead className="text-xs uppercase bg-[#357112] text-white">
               <tr>

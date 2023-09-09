@@ -98,9 +98,9 @@ const Navbar = ({ qrScannerVisible, toggleQrScanner }) => {
       </div>
       <div className="flex md:hidden bottom-1 left-1 absolute z-50">
         <button
-          className="text-black text-3xl font-normal z-10"
+          className="text-5xl font-normal z-10 text-[#357112]"
           onClick={() => setIsToggle(!isToggle)}>
-          ☰
+          {"▶"}
         </button>
       </div>
       {isToggle && (
