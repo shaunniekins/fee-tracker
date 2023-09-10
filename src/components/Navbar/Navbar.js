@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { supabase } from "../../../supabase";
 
 const Navbar = ({ qrScannerVisible, toggleQrScanner }) => {
   const pathname = usePathname();
@@ -47,7 +48,8 @@ const Navbar = ({ qrScannerVisible, toggleQrScanner }) => {
         pathname === "/dashboard" ||
         pathname === "/dashboard/activity" ||
         pathname === "/history",
-      action: () => {
+      action: async () => {
+        let { error } = await supabase.auth.signOut();
         router.push("/signin");
       },
     },
@@ -96,9 +98,9 @@ const Navbar = ({ qrScannerVisible, toggleQrScanner }) => {
           ) : null
         )}
       </div>
-      <div className="flex md:hidden bottom-1 left-1 absolute z-50">
+      <div className="flex md:hidden bottom-0 left-[-6px] absolute z-50">
         <button
-          className="text-5xl font-normal z-10 text-[#357112]"
+          className="text-5xl font-normal z-10 text-green-400"
           onClick={() => setIsToggle(!isToggle)}>
           {"▶"}
         </button>

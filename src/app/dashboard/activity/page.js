@@ -1,7 +1,12 @@
 "use client";
 
 import TableData from "@/components/TableData/TableData";
+import Protected from "../../../../Protected";
 
 export default function DashboardActivityRoute() {
-  return <TableData />;
+  return (
+    <Protected>
+      <TableData />
+    </Protected>
+  );
 }

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "../../../supabase";
 
-const Signin = ({ isUser, setIsUser }) => {
+const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
@@ -14,16 +15,26 @@ const Signin = ({ isUser, setIsUser }) => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
 
-    setEmail("");
-    setPassword("");
-    router.push("/dashboard");
+    try {
+      const { user, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
 
-    // Add any additional logic you want to perform on form submission
+      if (error) {
+        console.error("Login failed:", error.message);
+      } else {
+        console.log("Logged in successfully");
+        setEmail("");
+        setPassword("");
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      console.error("An unexpected error occurred:", error);
+    }
   };
 
   return (
@@ -39,7 +50,7 @@ const Signin = ({ isUser, setIsUser }) => {
             name="email"
             value={email}
             onChange={handleEmailChange}
-            // required
+            required
             placeholder="Enter Your Email"
             className="w-full h-[50px] mb-[18px] text-[14px] bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] pl-[21.7px]"
           />
@@ -48,7 +59,7 @@ const Signin = ({ isUser, setIsUser }) => {
             name="password"
             value={password}
             onChange={handlePasswordChange}
-            // required
+            required
             placeholder="Enter Your Password"
             className="w-full h-[50px] mb-[8px] text-[14px] bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] pl-[21.7px]"
           />

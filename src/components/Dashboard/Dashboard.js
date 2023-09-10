@@ -6,6 +6,7 @@ import {
   insertStudentData,
   updateStudentData,
 } from "@/app/data/new_data";
+import { supabase } from "../../../supabase";
 
 import QRCodeScanner from "../QrScanner/QrScanner";
 
