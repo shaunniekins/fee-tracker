@@ -98,7 +98,7 @@ const Navbar = ({ qrScannerVisible, toggleQrScanner }) => {
           ) : null
         )}
       </div>
-      <div className="flex md:hidden bottom-0 left-[-6px] absolute z-50">
+      <div className="flex md:hidden bottom-0 left-[-6px] fixed z-50">
         <button
           className="text-5xl font-normal z-10 text-green-400"
           onClick={() => setIsToggle(!isToggle)}>

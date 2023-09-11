@@ -105,8 +105,12 @@ const TableData = () => {
     // Create a file name with the current date
     const fileName = `[${currentDate}] - LCO Fee Student List.csv`;
 
+    // Define the title
+    const title = "LCO Fee Student List";
+
     // Convert data to CSV format with the specified column order
     const csvData = [
+      `"${title}"`, // Add the title row
       "ID Number,First Semester,First Semester Date,Second Semester,Second Semester Date,College",
       ...filteredData.map((item) =>
         [
@@ -142,10 +146,14 @@ const TableData = () => {
   // Pagination functions
   const indexOfLastEntry = currentPage * entriesPerPage;
   const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
-  const currentEntries = filteredData.slice(
-    indexOfFirstEntry,
-    indexOfLastEntry
-  );
+
+  // Sort the entire data array by date_last_modified
+  const sortedData = [...data].sort((a, b) => {
+    return new Date(b.date_last_modified) - new Date(a.date_last_modified);
+  });
+
+  // Apply pagination to the sorted data
+  const currentEntries = sortedData.slice(indexOfFirstEntry, indexOfLastEntry);
 
   const handleNextPage = () => {
     if (indexOfLastEntry < filteredData.length) {
