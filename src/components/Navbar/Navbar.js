@@ -98,15 +98,15 @@ const Navbar = ({ qrScannerVisible, toggleQrScanner }) => {
           ) : null
         )}
       </div>
-      <div className="flex md:hidden bottom-0 left-[-6px] fixed z-50">
+      <div className="flex md:hidden bottom-4 left-3 fixed z-50">
         <button
           className="text-5xl font-normal z-10 text-green-400"
           onClick={() => setIsToggle(!isToggle)}>
-          {"▶"}
+          {isToggle ? "▼" : "▲"}
         </button>
       </div>
       {isToggle && (
-        <div className="z-10 w-full bg-white border-t-2 border-[#357112] py-5 px-20 rounded-t-3xl flex flex-col md:hidden absolute bottom-0 left-1/2 transform -translate-x-1/2  gap-y-4">
+        <div className="z-10 w-full bg-white border-t-2 border-[#357112] py-5 px-20 rounded-t-3xl flex flex-col md:hidden fixed bottom-0 left-1/2 transform -translate-x-1/2 gap-y-4">
           {buttons.map((button, index) =>
             button.condition ? (
               <button
