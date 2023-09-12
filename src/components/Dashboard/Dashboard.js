@@ -219,20 +219,24 @@ const Dashboard = () => {
                 <option value="1st Semester">1st Semester</option>
                 <option value="2nd Semester">2nd Semester</option>
               </select>
-              <select
-                className="w-full py-[25px] rounded-3xl bg-transparent border-2 border-[#357112] text-center appearance-none"
-                id="college"
-                name="college"
-                value={college}
-                onChange={(e) => setCollege(e.target.value)}>
-                <option value="CAA">CAA</option>
-                <option value="CCIS">CCIS</option>
-                <option value="CED">CED</option>
-                <option value="CEGS">CEGS</option>
-                <option value="CHASS">CHASS</option>
-                <option value="CMNS">CMNS</option>
-                <option value="COFES">COFES</option>
-              </select>
+              {semester !== "2nd Semester" ? (
+                <select
+                  className="w-full py-[25px] rounded-3xl bg-transparent border-2 border-[#357112] text-center appearance-none"
+                  id="college"
+                  name="college"
+                  value={college}
+                  onChange={(e) => setCollege(e.target.value)}>
+                  <option value="CAA">CAA</option>
+                  <option value="CCIS">CCIS</option>
+                  <option value="CED">CED</option>
+                  <option value="CEGS">CEGS</option>
+                  <option value="CHASS">CHASS</option>
+                  <option value="CMNS">CMNS</option>
+                  <option value="COFES">COFES</option>
+                </select>
+              ) : (
+                <div className="w-full" />
+              )}
               <div className="w-full"></div>
             </div>
             <input
