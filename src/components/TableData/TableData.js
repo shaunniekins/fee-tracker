@@ -148,7 +148,7 @@ const TableData = () => {
   const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
 
   // Sort the entire data array by date_last_modified
-  const sortedData = [...data].sort((a, b) => {
+  const sortedData = [...filteredData].sort((a, b) => {
     return new Date(b.date_last_modified) - new Date(a.date_last_modified);
   });
 
