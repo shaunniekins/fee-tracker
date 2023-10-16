@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../../supabase";
 import Indicator from "../Indicator/Indicator";
+import Image from "next/image";
 
 const Signin = () => {
   const [email, setEmail] = useState("");
@@ -88,10 +89,11 @@ const Signin = () => {
       )}
       <div className="w-screen h-[100dvh] flex flex-col items-center justify-center font-Montserrat bg-[#357112] gap-y-10 px-5">
         <div className="flex flex-col items-center top-0 absolute mt-10 space-y-3">
-          <img
-            className="w-[120px] h-[120px]"
+          <Image
             src="lco-logo-enhanced.svg"
             alt="LCO Logo"
+            width={120}
+            height={120}
           />
           <div className="text-center">
             <h3 className="font-Montserrat text-white text-xs leading-tight ">

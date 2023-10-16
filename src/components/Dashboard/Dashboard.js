@@ -12,6 +12,7 @@ import {
 import { fetchSettingsData } from "@/app/data/settings_data";
 
 import QRCodeScanner from "../QrScanner/QrScanner";
+import Image from "next/image";
 
 const Dashboard = () => {
   const [idNumber, setIdNumber] = useState("");
@@ -201,11 +202,12 @@ const Dashboard = () => {
       // toggleQrScanner={() => setQrScannerVisible(!qrScannerVisible)}
       />
       {!qrScannerVisible ? (
-        <div className="flex flex-col md:hidden justify-center items-center mt-[40px] mb-[-100px] ">
-          <img
-            className="w-20 h-20"
+        <div className="flex flex-col md:hidden justify-center items-center mt-[40px] mb-[-10px] ">
+          <Image
             src="lco-logo-enhanced.svg"
             alt="LCO Logo"
+            width={80}
+            height={80}
           />
           <h1 className="flex flex-col space-y-[-2px] text-center">
             {" "}
@@ -227,10 +229,11 @@ const Dashboard = () => {
             <button
               className="md:hidden self-center"
               onClick={() => setQrScannerVisible(!qrScannerVisible)}>
-              <img
-                className="w-20 h-20"
+              <Image
                 src="lco-logo-enhanced.svg"
                 alt="LCO Logo"
+                width={80}
+                height={80}
               />
             </button>
             <button
@@ -272,16 +275,17 @@ const Dashboard = () => {
                 onChange={handleChange}
                 onKeyDown={handleEnterKey}
                 placeholder="ID Number"
-                className="w-full text-[35px] md:text-[50px] py-10 px-[40px] border-2 rounded-3xl border-[#357112] text-right"
+                className="w-full text-[33px] md:text-[50px] py-10 px-[40px] border-2 rounded-3xl border-[#357112] text-right"
               />
               <div className="absolute left-0 top-0 bottom-0 flex items-center pl-[40px]">
                 <button
                   className=""
                   onClick={() => setQrScannerVisible(!qrScannerVisible)}>
-                  <img
+                  <Image
                     src="camera-outline.svg"
                     alt="Camera Icon"
-                    className="h-12 w-12"
+                    width={48}
+                    height={48}
                   />
                 </button>
               </div>

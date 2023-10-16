@@ -215,12 +215,12 @@ const Settings = () => {
   };
 
   return (
-    <div className="w-screen h-[100dvh] flex flex-col overflow-x-hidden select-none">
+    <div className="w-screen h-screen flex flex-col overflow-x-hidden select-none">
       <Navbar />
       {indicatorMsg && (
         <Indicator msg={indicatorMsg} status={indicatorStatus} />
       )}
-      <div className="flex flex-col py-20 px-5 sm:px-10 lg:px-52 2xl:px-[500px] font-Montserrat gap-y-6">
+      <div className="flex flex-col py-12 md:py-20 px-5 sm:px-10 lg:px-52 2xl:px-[500px] font-Montserrat gap-y-6">
         <div>
           <h1 className="font-semibold">Profile Information </h1>
           <div className="w-full px-5 border border-green-700" />
@@ -255,12 +255,12 @@ const Settings = () => {
                 />
                 <button
                   className={`text-[12px] ${
-                    email === initialEmail
+                    email === initialEmail || email.trim() === ""
                       ? "text-gray-500 "
                       : "text-purple-500 "
                   }`}
                   onClick={handleNewEmailSubmission}
-                  disabled={email === initialEmail}>
+                  disabled={email === initialEmail || email.trim() === ""}>
                   Change
                 </button>
                 <button
@@ -385,13 +385,13 @@ const Settings = () => {
                 />
                 <button
                   className={`rounded-[10px] border border-[#357112] px-5 py-2 ${
-                    schoolYear === initialSchoolYear || schoolYear === ""
+                    schoolYear === initialSchoolYear || schoolYear.trim() === ""
                       ? "bg-gray-300"
                       : "bg-green-400"
                   }`}
                   onClick={handleUpdateSchoolYear}
                   disabled={
-                    schoolYear === initialSchoolYear || schoolYear === ""
+                    schoolYear === initialSchoolYear || schoolYear.trim() === ""
                   } // Disable the button when they are the same
                 >
                   Update

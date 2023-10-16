@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { supabase } from "../../../supabase";
+import Image from "next/image";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -104,10 +105,11 @@ const Navbar = () => {
 
       <div className="w-screen justify-around items-center mt-2 hidden md:flex font-Montserrat select-none">
         <div className="flex items-center w-full">
-          <img
-            className="w-20 h-20 my-2 ml-5"
+          <Image
             src="lco-logo-enhanced.svg"
             alt="LCO Logo"
+            width={80}
+            height={80}
           />
           <h1 className="flex flex-col text-start font-semibold space-y-[-5px]">
             <span className="text-md">LCO Fee Tracker</span>
