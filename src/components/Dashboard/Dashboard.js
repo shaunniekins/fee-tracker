@@ -1,12 +1,15 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import Indicator from "../Indicator/Indicator";
 import {
-  fetchStudentData,
-  insertStudentData,
-  updateStudentData,
-} from "@/app/data/new_data";
-import { supabase } from "../../../supabase";
+  fetchTransactionData,
+  insertTransactionData,
+  updateTransactionData,
+} from "@/app/data/transaction_data";
+
+import { fetchSettingsData } from "@/app/data/settings_data";
 
 import QRCodeScanner from "../QrScanner/QrScanner";
 
@@ -18,20 +21,32 @@ const Dashboard = () => {
 
   // Initialize default values from localStorage or use the provided defaults
   const defaultSemester = localStorage.getItem("semester") || "1st Semester";
-  const defaultCollege = localStorage.getItem("college") || "CAA";
-  const defaultSchoolYear = localStorage.getItem("school_year") || "2023-2024";
 
   // State to manage the selected values
   const [semester, setSemester] = useState(defaultSemester);
-  const [college, setCollege] = useState(defaultCollege);
-  const [schoolYear, setSchoolYear] = useState(defaultSchoolYear);
+  const [schoolYear, setSchoolYear] = useState(" - ");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: settingsData } = await fetchSettingsData();
+        const settings = settingsData;
+
+        setSchoolYear(settings[0].school_year);
+        // console.log("school_year", settings[0].id);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     // Update localStorage when the selected values change
     localStorage.setItem("semester", semester);
-    localStorage.setItem("college", college);
-    localStorage.setItem("school_year", schoolYear);
-  }, [semester, college, schoolYear]);
+    // localStorage.setItem("college", college);
+  }, [semester]);
 
   const handleQRScan = (data) => {
     setIdNumber(data);
@@ -69,7 +84,7 @@ const Dashboard = () => {
   };
 
   const handlePay = async () => {
-    const schoolYear = document.getElementById("school_year").value;
+    const school_year = schoolYear;
     const semester = document.getElementById("semester").value;
 
     if (idNumber.length !== 9) {
@@ -83,7 +98,7 @@ const Dashboard = () => {
       }
     }
 
-    const { data: existingStudentData } = await fetchStudentData();
+    const { data: existingStudentData } = await fetchTransactionData();
     const existingStudent = existingStudentData.find(
       (item) => item.id_num === idNumber
     );
@@ -120,7 +135,7 @@ const Dashboard = () => {
           second_sem_time: now.toLocaleTimeString(),
           date_last_modified: `${localDate} ${now.toLocaleTimeString()}`,
         };
-        await updateStudentData(idNumber, schoolYear, updateData);
+        await updateTransactionData(idNumber, school_year, updateData);
 
         setIdNumber("");
         setIndicatorMsg("Paid successfully");
@@ -159,18 +174,18 @@ const Dashboard = () => {
 
         const newStudent = {
           id_num: idNumber,
-          school_year: schoolYear,
+          school_year: school_year,
           first_sem: semester === "1st Semester" ? true : false,
           first_sem_date: localDate,
           first_sem_time: now.toLocaleTimeString(),
           second_sem: false,
           second_sem_date: null,
           second_sem_time: null,
-          college: document.getElementById("college").value,
+          // college: document.getElementById("college").value,
           date_last_modified: `${localDate} ${now.toLocaleTimeString()}`,
         };
 
-        await insertStudentData(newStudent);
+        await insertTransactionData(newStudent);
         setIdNumber("");
         setIndicatorMsg("Paid successfully");
         setIndicatorStatus(true);
@@ -180,19 +195,50 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col">
+    <div className="w-screen h-[100dvh] flex flex-col select-none">
       <Navbar
-        qrScannerVisible={qrScannerVisible}
-        toggleQrScanner={() => setQrScannerVisible(!qrScannerVisible)}
+      // qrScannerVisible={qrScannerVisible}
+      // toggleQrScanner={() => setQrScannerVisible(!qrScannerVisible)}
       />
-
-      <div className="flex flex-col flex-grow justify-center py-3 px-5 sm:px-10 lg:px-52 xl:px-96 font-Montserrat select-none">
-        {indicatorMsg && (
+      {!qrScannerVisible ? (
+        <div className="flex flex-col md:hidden justify-center items-center mt-[40px] mb-[-100px] ">
+          <img
+            className="w-20 h-20"
+            src="lco-logo-enhanced.svg"
+            alt="LCO Logo"
+          />
+          <h1 className="flex flex-col space-y-[-2px] text-center">
+            {" "}
+            <span className="text-md font-semibold">LCO Fee Tracker</span>
+            <span className="tracking-wider font-mono font-[500] text-[8px]">
+              Est. 2023-2024
+            </span>
+          </h1>
+        </div>
+      ) : (
+        ""
+      )}
+      <div className="flex flex-col flex-grow justify-center py-3 px-5 sm:px-10 lg:px-52 xl:px-96 font-Montserrat ">
+        {indicatorMsg && !qrScannerVisible && (
           <Indicator msg={indicatorMsg} status={indicatorStatus} />
         )}
         {qrScannerVisible ? (
-          <div className="z-0 w-[100%] md:w-[500px] mt-[-50px] self-center font-Montserrat text-xl font-semibold">
-            <h2 className="text-center">Scan ID</h2>
+          <div className="z-0 w-[100%] md:w-[500px] mt-[-50px] self-center font-Montserrat text-center flex flex-col text-xl font-semibold">
+            <button
+              className="md:hidden self-center"
+              onClick={() => setQrScannerVisible(!qrScannerVisible)}>
+              <img
+                className="w-20 h-20"
+                src="lco-logo-enhanced.svg"
+                alt="LCO Logo"
+              />
+            </button>
+            <button
+              className="text-center"
+              onClick={() => setQrScannerVisible(!qrScannerVisible)}>
+              Scan ID
+            </button>
+
             {/* Render the QR Scanner component */}
             <QRCodeScanner
               onScan={(data) => handleQRScan(data)}
@@ -201,15 +247,13 @@ const Dashboard = () => {
           </div>
         ) : (
           <>
-            <div className="flex flex-col md:flex-row gap-y-[25px] md:gap-y-0 md:gap-x-[25px] mb-[25px] text-[20px]">
-              <input
-                className="w-full py-[25px] rounded-3xl border-2 border-[#357112] text-center"
-                type="text"
-                name="school_year"
-                id="school_year"
-                value={schoolYear}
-                onChange={(e) => setSchoolYear(e.target.value)}
-              />
+            <div className="w-full flex flex-col md:flex-row gap-y-[25px] md:gap-y-0 md:gap-x-[25px] mb-[25px] text-[20px]">
+              <p
+                className="w-full py-[25px] rounded-3xl border-2
+                border-[#357112] text-center">
+                {schoolYear}
+              </p>
+
               <select
                 className="w-full py-[25px] rounded-3xl bg-transparent border-2 border-[#357112] text-center appearance-none"
                 id="semester"
@@ -219,34 +263,30 @@ const Dashboard = () => {
                 <option value="1st Semester">1st Semester</option>
                 <option value="2nd Semester">2nd Semester</option>
               </select>
-              {semester !== "2nd Semester" ? (
-                <select
-                  className="w-full py-[25px] rounded-3xl bg-transparent border-2 border-[#357112] text-center appearance-none"
-                  id="college"
-                  name="college"
-                  value={college}
-                  onChange={(e) => setCollege(e.target.value)}>
-                  <option value="CAA">CAA</option>
-                  <option value="CCIS">CCIS</option>
-                  <option value="CED">CED</option>
-                  <option value="CEGS">CEGS</option>
-                  <option value="CHASS">CHASS</option>
-                  <option value="CMNS">CMNS</option>
-                  <option value="COFES">COFES</option>
-                </select>
-              ) : (
-                <div className="w-full" />
-              )}
-              <div className="w-full"></div>
+              <div className="w-full" />
             </div>
-            <input
-              type="text"
-              value={idNumber}
-              onChange={handleChange}
-              onKeyDown={handleEnterKey} // Call handleEnterKey on key down
-              placeholder="ID Number"
-              className="text-[40px] md:text-[50px] py-10 px-[40px] border-2 rounded-3xl border-[#357112] text-center md:text-right"
-            />
+            <div className="w-full relative">
+              <input
+                type="text"
+                value={idNumber}
+                onChange={handleChange}
+                onKeyDown={handleEnterKey}
+                placeholder="ID Number"
+                className="w-full text-[35px] md:text-[50px] py-10 px-[40px] border-2 rounded-3xl border-[#357112] text-right"
+              />
+              <div className="absolute left-0 top-0 bottom-0 flex items-center pl-[40px]">
+                <button
+                  className=""
+                  onClick={() => setQrScannerVisible(!qrScannerVisible)}>
+                  <img
+                    src="camera-outline.svg"
+                    alt="Camera Icon"
+                    className="h-12 w-12"
+                  />
+                </button>
+              </div>
+            </div>
+
             <div className="flex flex-col md:flex-row gap-y-[25px] md:gap-y-0 md:gap-x-[25px] mt-[25px]">
               <div className="w-full hidden md:flex"></div>
               <div className="w-full hidden md:flex"></div>

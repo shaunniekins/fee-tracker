@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 import { useRouter } from "next/navigation";
@@ -34,7 +36,7 @@ const Protected = ({ children }) => {
   if (isLoading) {
     // You can show a loading spinner or message while checking authentication.
     return (
-      <div className="flex w-screen h-screen justify-center items-center">
+      <div className="flex w-screen h-[100dvh] justify-center items-center">
         <ThreeDots
           height="80"
           width="80"

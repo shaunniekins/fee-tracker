@@ -35,11 +35,11 @@ export default function SigninRoute() {
     };
 
     fetchData();
-  }, [pathname]); // Include pathname in the dependency array
+  }, [pathname]);
 
   if (isLoading) {
     return (
-      <div className="flex w-screen h-screen justify-center items-center">
+      <div className="flex w-screen h-[100dvh] justify-center items-center">
         <ThreeDots
           height="80"
           width="80"
@@ -55,24 +55,6 @@ export default function SigninRoute() {
   }
 
   if (!user) {
-    // Handle cases where the user is not authenticated.
-    return (
-      <div className="w-screen h-screen flex flex-col items-center justify-center font-Montserrat bg-[#357112] gap-y-10">
-        <div className="flex flex-col items-center top-0 absolute mt-5">
-          <img
-            className="w-20 h-20 md:w-32 md:h-32"
-            src="lco-logo-enhanced.svg"
-            alt="LCO Logo"
-          />
-          <h2 className="text-white font-[600]">LCO Fee Tracker</h2>
-        </div>
-        <div className="w-full flex justify-center px-5">
-          <Signin />
-        </div>
-        <h3 className="text-white text-xs bottom-0 absolute mb-5">
-          Est. 2023-2024
-        </h3>
-      </div>
-    );
+    return <Signin />;
   }
 }

@@ -1,5 +1,11 @@
+"use client";
 import React, { useState, useEffect } from "react";
-import { fetchStudentData } from "@/app/data/new_data";
+// import { fetchStudentData } from "@/app/data/new_data";
+import {
+  fetchTransactionData,
+  fetchTransactionWithStudentData,
+} from "@/app/data/transaction_data";
+import { fetchEnrolledStudentsData } from "@/app/data/enrolled_students_data";
 import Navbar from "../Navbar/Navbar";
 
 const TableData = () => {
@@ -22,6 +28,8 @@ const TableData = () => {
     "First Semester",
     "Second Semester",
     "College",
+    "Program",
+    "Name",
   ];
 
   const handleFilterToggle = () => {
@@ -50,7 +58,8 @@ const TableData = () => {
     filteredData = data.filter((item) => {
       return (
         item.id_num.includes(idNumber) &&
-        (selectedCollege === "" || item.college === selectedCollege) &&
+        (selectedCollege === "" ||
+          item.enrolled_students.college === selectedCollege) &&
         (selectedSchoolYear === "" || item.school_year === selectedSchoolYear)
       );
     });
@@ -62,16 +71,20 @@ const TableData = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: student_data, error } = await fetchStudentData();
+      const { data: student_data, error } =
+        await fetchTransactionWithStudentData();
 
       if (error) {
         setError(error);
       } else {
         setData(student_data);
+        // console.log("student_data", student_data);
 
         // Extract unique college and school_year values
         const uniqueColleges = [
-          ...new Set(student_data.map((item) => item.college)),
+          ...new Set(
+            student_data.map((item) => item.enrolled_students.college)
+          ),
         ];
         const uniqueSchoolYears = [
           ...new Set(student_data.map((item) => item.school_year)),
@@ -111,7 +124,7 @@ const TableData = () => {
     // Convert data to CSV format with the specified column order
     const csvData = [
       `"${title}"`, // Add the title row
-      "ID Number,First Semester,First Semester Date,Second Semester,Second Semester Date,College",
+      "ID Number,First Semester,First Semester Date Paid,Second Semester,Second Semester Date Paid,College,Program,Last Name,First Name,Middle Name,Ext Name",
       ...filteredData.map((item) =>
         [
           `"${item.id_num}"`,
@@ -119,7 +132,12 @@ const TableData = () => {
           `"${item.first_sem_date}"`,
           `"${item.second_sem === true ? "paid" : "unpaid"}"`,
           `"${item.second_sem_date}"`,
-          `"${item.college}"`,
+          `"${item.enrolled_students.college}"`,
+          `"${item.enrolled_students.stud_program}"`,
+          `"${item.enrolled_students.lastname}"`,
+          `"${item.enrolled_students.firstname}"`,
+          `"${item.enrolled_students.middlename}"`,
+          `"${item.enrolled_students.extname}"`,
         ].join(",")
       ),
     ].join("\n");
@@ -168,7 +186,7 @@ const TableData = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col">
+    <div className="w-screen h-[100dvh] flex flex-col">
       <Navbar />
       <div
         className={`${
@@ -259,7 +277,13 @@ const TableData = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                      {item.college}
+                      {item.enrolled_students.college}
+                    </td>
+                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                      {item.enrolled_students.stud_program}
+                    </td>
+                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                      {`${item.enrolled_students.lastname}, ${item.enrolled_students.firstname}`}
                     </td>
                   </tr>
                 ))}
@@ -267,7 +291,7 @@ const TableData = () => {
           </table>
         </div>
         {isModal ? (
-          <div className="z-50 fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-black bg-opacity-50">
+          <div className="z-50 fixed top-0 left-0 w-screen h-[100dvh] flex justify-center items-center bg-black bg-opacity-50">
             <div className="w-full flex flex-col md:w-96 bg-white rounded-lg p-6 mx-5">
               <h2 className="text-xl font-semibold mb-4">Filter Options</h2>
               <div className="mb-4">

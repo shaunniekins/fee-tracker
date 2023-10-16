@@ -5,7 +5,7 @@ const Indicator = ({ msg, status }) => {
 
   return (
     <div
-      className={`top-2 md:top-5 md:right-0 absolute h-10 rounded-lg md:rounded-l-lg flex justify-center items-center px-5 py-5 text-sm md:text-md font-Montserrat ${backgroundColor}`}>
+      className={`top-2 md:top-5 right-1 absolute h-10 rounded-lg md:rounded-l-lg flex justify-center items-center px-5 py-5 text-sm md:text-md font-Montserrat ${backgroundColor}`}>
       {msg}
     </div>
   );

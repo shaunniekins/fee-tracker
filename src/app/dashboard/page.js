@@ -1,5 +1,3 @@
-"use client";
-
 import Dashboard from "@/components/Dashboard/Dashboard";
 import Protected from "../../../Protected";
 

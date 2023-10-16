@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import { fetchStudentData } from "@/app/data/new_data";
+import { fetchTransactionData } from "@/app/data/transaction_data";
 
 const History = () => {
   const [idNumber, setIdNumber] = useState("");
@@ -13,7 +14,7 @@ const History = () => {
   useEffect(() => {
     const processData = async () => {
       try {
-        const { data, error } = await fetchStudentData();
+        const { data, error } = await fetchTransactionData();
 
         if (error) {
           console.error("Error fetching student data:", error);
@@ -142,9 +143,9 @@ const History = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col overflow-x-hidden">
+    <div className="w-screen h-[100dvh] flex flex-col overflow-x-hidden">
       <Navbar />
-      <div className="flex flex-col py-3 px-5 sm:px-10 lg:px-52 2xl:px-[600px] font-Montserrat">
+      <div className="flex flex-col py-3 px-5 sm:px-10 lg:px-52 2xl:px-[500px] font-Montserrat">
         <div className="flex flex-col md:flex-row gap-y-[25px] md:gap-y-0 md:gap-x-[25px] w-full mb-[25px] select-none">
           <input
             value={idNumber}
