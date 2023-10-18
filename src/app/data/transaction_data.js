@@ -57,6 +57,8 @@ export const fetchTransactionWithStudentData = async (
     );
 
     // console.log("id: ", id);
+    // console.log("currentPage: ", currentPage);
+
     // console.log("school_year: ", school_year);
     // console.log("college: ", college);
 

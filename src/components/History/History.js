@@ -14,12 +14,9 @@ const History = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [currentDate, setCurrentDate] = useState("");
   const [yesterdayDate, setYesterdayDate] = useState("");
-  const [currPage, setCurrPage] = useState(1); // storing current page number
-  const [prevPage, setPrevPage] = useState(0); // storing prev page number
-  const [wasLastList, setWasLastList] = useState(false);
-  const itemsPerPage = 30;
-
+  const [currPage, setCurrPage] = useState(1);
   const [countDataAvailable, setCountDataAvailable] = useState(0);
+  const itemsPerPage = 3;
 
   const listInnerRef = useRef();
 
@@ -29,7 +26,7 @@ const History = () => {
       const { data, error, count } = await fetchTransactionWithStudentData(
         itemsPerPage,
         currPage,
-        idNumber,
+        idNumber || "",
         "",
         ""
       );
@@ -40,12 +37,6 @@ const History = () => {
         return;
       }
 
-      if (!data.length) {
-        setWasLastList(true);
-        return;
-      }
-
-      setPrevPage(currPage);
       const updatedData = [...filteredData];
 
       data.forEach((item) => {
@@ -99,7 +90,6 @@ const History = () => {
       // Set the filtered and sorted data
       setFilteredData(updatedData);
 
-      // Get the current date
       const today = new Date();
       const yesterday = new Date(today);
       yesterday.setDate(today.getDate() - 1);
@@ -124,11 +114,8 @@ const History = () => {
   };
 
   useEffect(() => {
-    if (!wasLastList) {
-      fetchData();
-    }
-  }, [idNumber, currPage, wasLastList]);
-  // }, [idNumber, currPage, wasLastList]);
+    fetchData();
+  }, [idNumber, currPage]);
 
   // Function to format date string
   function formatDateString(dateString) {
@@ -154,12 +141,6 @@ const History = () => {
     return time.toLocaleTimeString(undefined, options);
   }
 
-  const sortedDateKeys = Object.keys(filteredData).sort((a, b) => {
-    const dateA = new Date(formatDateString(a));
-    const dateB = new Date(formatDateString(b));
-    return dateB - dateA; // Sort in descending order (latest first)
-  });
-
   const handleChange = (event) => {
     const inputValue = event.target.value;
     const numericValue = inputValue.replace(/[^0-9]/g, "");
@@ -172,9 +153,8 @@ const History = () => {
       }
 
       setIdNumber(formattedValue);
-      // setIdNumber(event.target.value);
-      setCurrPage(1); // Reset page number when the search query changes
-      setFilteredData([]); // Clear existing data
+      setCurrPage(1);
+      setFilteredData([]);
     }
   };
 
@@ -187,14 +167,11 @@ const History = () => {
     //     setCurrPage(currPage + 1); // Increment the page number
     //   }
     // }
-    if (!wasLastList && countDataAvailable >= currPage * itemsPerPage) {
+    if (countDataAvailable >= currPage * itemsPerPage) {
       // Load more data only if there is more data available
       setCurrPage(currPage + 1);
     }
   };
-
-  // console.log("filteredData", filteredData);
-  // console.log("sortedDateKeys", sortedDateKeys);
 
   return (
     <div className="w-screen h-[100dvh] flex flex-col overflow-x-hidden ">
@@ -259,17 +236,12 @@ const History = () => {
         </div>
         <button
           className={` self-center py-2 px-3 rounded-full mt-5 ${
-            !wasLastList && countDataAvailable >= currPage * itemsPerPage
-              ? "bg-green-200"
-              : "bg-gray-200 text-gray-700"
+            countDataAvailable >= currPage * itemsPerPage && "bg-green-200"
+            // : "bg-gray-200 text-gray-700"
           }`}
           onClick={handleScroll}
-          disabled={
-            !(!wasLastList && countDataAvailable >= currPage * itemsPerPage)
-          }>
-          {!wasLastList && countDataAvailable >= currPage * itemsPerPage
-            ? "Load More"
-            : "No Data Found"}
+          disabled={!(countDataAvailable >= currPage * itemsPerPage)}>
+          {countDataAvailable >= currPage * itemsPerPage && "Load More"}
         </button>
       </div>
     </div>
