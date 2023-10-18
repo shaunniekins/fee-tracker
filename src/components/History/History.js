@@ -16,7 +16,7 @@ const History = () => {
   const [yesterdayDate, setYesterdayDate] = useState("");
   const [currPage, setCurrPage] = useState(1);
   const [countDataAvailable, setCountDataAvailable] = useState(0);
-  const itemsPerPage = 3;
+  const itemsPerPage = 20;
 
   const listInnerRef = useRef();
 
