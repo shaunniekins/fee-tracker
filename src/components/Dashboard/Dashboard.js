@@ -99,7 +99,7 @@ const Dashboard = () => {
       }
     }
 
-    const { data: existingStudentData } = await fetchTransactionData();
+    const { data: existingStudentData } = await fetchTransactionData(idNumber);
     const existingStudent = existingStudentData.find(
       (item) => item.id_num === idNumber
     );

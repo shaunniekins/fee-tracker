@@ -242,7 +242,7 @@ const Settings = () => {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center space-x-5">
+              <div className="flex flex-col md:flex-row md:items-center space-x-5 space-y-1 md:space-y-0">
                 {/* <h1 className="font-semibold">{currentUser.email}</h1> */}
                 <input
                   type="email"
@@ -251,23 +251,25 @@ const Settings = () => {
                   onChange={handleEmailChange}
                   required
                   placeholder="Enter new email"
-                  className="flex-grow bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] px-5 py-2"
+                  className="w-full bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] px-5 py-2"
                 />
-                <button
-                  className={`text-[12px] ${
-                    email === initialEmail || email.trim() === ""
-                      ? "text-gray-500 "
-                      : "text-purple-500 "
-                  }`}
-                  onClick={handleNewEmailSubmission}
-                  disabled={email === initialEmail || email.trim() === ""}>
-                  Change
-                </button>
-                <button
-                  className="text-red-500 text-[12px]"
-                  onClick={() => setIsEditEmail(!isEditEmail)}>
-                  Cancel
-                </button>
+                <div className="flex flex-row space-x-2 items-end justify-end">
+                  <button
+                    className={`text-[12px] text-left ${
+                      email === initialEmail || email.trim() === ""
+                        ? "text-gray-500 "
+                        : "text-purple-500 "
+                    }`}
+                    onClick={handleNewEmailSubmission}
+                    disabled={email === initialEmail || email.trim() === ""}>
+                    Change
+                  </button>
+                  <button
+                    className="text-red-500 text-[12px] text-left"
+                    onClick={() => setIsEditEmail(!isEditEmail)}>
+                    Cancel
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -373,7 +375,7 @@ const Settings = () => {
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row justify-between md:items-center">
               <h1 className="">School Year</h1>
-              <div className="flex justify-between space-x-5">
+              <div className="flex flex-col md:flex-row justify-between space-x-5 space-y-4 md:space-y-0">
                 <input
                   type="text"
                   name="school_year"
@@ -383,19 +385,25 @@ const Settings = () => {
                   placeholder="Enter school year"
                   className="flex-grow bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] px-5 py-2"
                 />
-                <button
-                  className={`rounded-[10px] border border-[#357112] px-5 py-2 ${
-                    schoolYear === initialSchoolYear || schoolYear.trim() === ""
-                      ? "bg-gray-300"
-                      : "bg-green-400"
-                  }`}
-                  onClick={handleUpdateSchoolYear}
-                  disabled={
-                    schoolYear === initialSchoolYear || schoolYear.trim() === ""
-                  } // Disable the button when they are the same
-                >
-                  Update
-                </button>
+                <div className="flex justify-between">
+                  <div />
+
+                  <button
+                    className={`rounded-[10px] border border-[#357112] px-5 py-2 ${
+                      schoolYear === initialSchoolYear ||
+                      schoolYear.trim() === ""
+                        ? "bg-gray-300"
+                        : "bg-green-400"
+                    }`}
+                    onClick={handleUpdateSchoolYear}
+                    disabled={
+                      schoolYear === initialSchoolYear ||
+                      schoolYear.trim() === ""
+                    } // Disable the button when they are the same
+                  >
+                    Update
+                  </button>
+                </div>
               </div>
             </div>
           </div>

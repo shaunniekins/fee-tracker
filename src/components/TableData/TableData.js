@@ -1,12 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
 // import { fetchStudentData } from "@/app/data/new_data";
-import {
-  fetchTransactionData,
-  fetchTransactionWithStudentData,
-} from "@/app/data/transaction_data";
-import { fetchEnrolledStudentsData } from "@/app/data/enrolled_students_data";
+import { fetchTransactionWithStudentData } from "@/app/data/transaction_data";
 import Navbar from "../Navbar/Navbar";
+import { handleExportToCSV } from "@/app/tools/exportCSV";
+import { fetchEnrolledStudentsCollegeData } from "@/app/data/enrolled_students_data";
+import {
+  fetchTransactionSchoolYearData,
+  fetchTransactionCountTotalData,
+} from "@/app/data/transaction_data";
 
 const TableData = () => {
   const [data, setData] = useState([]);
@@ -14,14 +16,16 @@ const TableData = () => {
   const [error, setError] = useState(null);
   const [isFilterToggle, setIsFilterToggle] = useState(false);
   const [isModal, setIsModal] = useState(false);
-  const [selectedCollege, setSelectedCollege] = useState("");
   const [selectedSchoolYear, setSelectedSchoolYear] = useState("");
+  const [selectedCollege, setSelectedCollege] = useState("");
   const [uniqueColleges, setUniqueColleges] = useState([]);
   const [uniqueSchoolYears, setUniqueSchoolYears] = useState([]);
+  const [isBtnClicked, setIsBtnClicked] = useState(false);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [entriesPerPage, setEntriesPerPage] = useState(8);
+  const entriesPerPage = 8;
 
   const headerNames = [
     "ID Number",
@@ -33,7 +37,8 @@ const TableData = () => {
   ];
 
   const handleFilterToggle = () => {
-    setIsFilterToggle(!isFilterToggle);
+    setSelectedSchoolYear(uniqueSchoolYears[0]);
+    setSelectedCollege(""), setIsFilterToggle(!isFilterToggle);
     setIsModal(false);
   };
 
@@ -52,131 +57,107 @@ const TableData = () => {
     }
   };
 
-  let filteredData;
-
-  if (isFilterToggle) {
-    filteredData = data.filter((item) => {
-      return (
-        item.id_num.includes(idNumber) &&
-        (selectedCollege === "" ||
-          item.enrolled_students.college === selectedCollege) &&
-        (selectedSchoolYear === "" || item.school_year === selectedSchoolYear)
-      );
-    });
-  } else {
-    filteredData = data.filter((item) => {
-      return item.id_num.includes(idNumber);
-    });
-  }
-
   useEffect(() => {
     const fetchData = async () => {
-      const { data: student_data, error } =
-        await fetchTransactionWithStudentData();
-
-      if (error) {
+      try {
+        const { data, error } = await fetchEnrolledStudentsCollegeData();
+        if (error) {
+          setError(error);
+        } else {
+          const uniqueColleges = [...new Set(data.map((item) => item.college))];
+          setUniqueColleges(uniqueColleges);
+          setSelectedCollege("");
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
         setError(error);
-      } else {
-        setData(student_data);
-        // console.log("student_data", student_data);
-
-        // Extract unique college and school_year values
-        const uniqueColleges = [
-          ...new Set(
-            student_data.map((item) => item.enrolled_students.college)
-          ),
-        ];
-        const uniqueSchoolYears = [
-          ...new Set(student_data.map((item) => item.school_year)),
-        ];
-
-        setUniqueColleges(uniqueColleges);
-        setUniqueSchoolYears(uniqueSchoolYears);
-
-        setSelectedCollege(""); // Set default to an empty string
-        setSelectedSchoolYear(uniqueSchoolYears[0] || ""); // Set default to the first option
       }
     };
 
     fetchData();
   }, []);
 
-  const trueCountFirstSem = filteredData.filter(
-    (item) => item.first_sem
-  ).length;
-  const trueCountSecondSem = filteredData.filter(
-    (item) => item.second_sem
-  ).length;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data, error } = await fetchTransactionSchoolYearData();
+        if (error) {
+          setError(error);
+        } else {
+          const uniqueSchoolYears = [
+            ...new Set(data.map((item) => item.school_year)),
+          ];
+          setUniqueSchoolYears(uniqueSchoolYears);
+          setSelectedSchoolYear(uniqueSchoolYears[0] || "");
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+        setError(error);
+      }
+    };
 
-  // Calculate the total by multiplying the counts by 100
-  const total = (trueCountFirstSem + trueCountSecondSem) * 100;
+    fetchData();
+  }, []);
 
-  const handleExportToCSV = () => {
-    // Get the current date in the format YYYY/MM/DD
-    const currentDate = new Date().toISOString().slice(0, 10);
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: student_data, error } =
+        await fetchTransactionWithStudentData(
+          entriesPerPage,
+          currentPage,
+          idNumber,
+          selectedSchoolYear,
+          selectedCollege
+        );
 
-    // Create a file name with the current date
-    const fileName = `[${currentDate}] - LCO Fee Student List.csv`;
+      if (error) {
+        setError(error);
+      } else {
+        setData(student_data);
+        // console.log("student_data", student_data);
+      }
+    };
 
-    // Define the title
-    const title = "LCO Fee Student List";
+    fetchData();
+  }, [
+    entriesPerPage,
+    currentPage,
+    idNumber,
+    selectedSchoolYear,
+    selectedCollege,
+    isFilterToggle,
+  ]);
 
-    // Convert data to CSV format with the specified column order
-    const csvData = [
-      `"${title}"`, // Add the title row
-      "ID Number,First Semester,First Semester Date Paid,Second Semester,Second Semester Date Paid,College,Program,Last Name,First Name,Middle Name,Ext Name",
-      ...filteredData.map((item) =>
-        [
-          `"${item.id_num}"`,
-          `"${item.first_sem === true ? "paid" : "unpaid"}"`,
-          `"${item.first_sem_date}"`,
-          `"${item.second_sem === true ? "paid" : "unpaid"}"`,
-          `"${item.second_sem_date}"`,
-          `"${item.enrolled_students.college}"`,
-          `"${item.enrolled_students.stud_program}"`,
-          `"${item.enrolled_students.lastname}"`,
-          `"${item.enrolled_students.firstname}"`,
-          `"${item.enrolled_students.middlename}"`,
-          `"${item.enrolled_students.extname}"`,
-        ].join(",")
-      ),
-    ].join("\n");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data, error, status, count } =
+          await fetchTransactionCountTotalData(
+            idNumber,
+            selectedSchoolYear,
+            selectedCollege
+          );
+        if (error) {
+          setError(error);
+        } else {
+          setTotalAmount(count * 100);
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+        setError(error);
+      }
+    };
 
-    // Create a Blob containing the CSV data
-    const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+    fetchData();
+  }, [idNumber, selectedSchoolYear, selectedCollege, isFilterToggle]);
 
-    const response = confirm("Do you want to download the CSV file?");
-
-    if (response) {
-      // Create a download link and trigger the download
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = fileName; // Set the file name with the current date
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    }
+  const handleButtonDone = () => {
+    setIsModal(false);
+    setIsBtnClicked(true);
   };
 
-  // Pagination functions
-  const indexOfLastEntry = currentPage * entriesPerPage;
-  const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
-
-  // Sort the entire data array by date_last_modified
-  const sortedData = [...filteredData].sort((a, b) => {
-    return new Date(b.date_last_modified) - new Date(a.date_last_modified);
-  });
-
-  // Apply pagination to the sorted data
-  const currentEntries = sortedData.slice(indexOfFirstEntry, indexOfLastEntry);
-
   const handleNextPage = () => {
-    if (indexOfLastEntry < filteredData.length) {
-      setCurrentPage(currentPage + 1);
-    }
+    setCurrentPage(currentPage + 1);
   };
 
   const handlePrevPage = () => {
@@ -206,13 +187,13 @@ const TableData = () => {
             <button
               onClick={handleFilterToggle}
               className={`${
-                isFilterToggle ? "bg-purple-500" : "bg-[#357112]"
+                isFilterToggle ? "bg-green-600" : "bg-[#357112]"
               } rounded-3xl py-[10px] px-[50px] text-white`}>
               Filter
             </button>
             {isFilterToggle ? (
               <button
-                className="bg-pink-200 rounded-3xl py-[10px] px-[20px]"
+                className="bg-green-500 rounded-3xl text-white py-[10px] px-[20px]"
                 onClick={() => setIsModal(!isModal)}>
                 ▼
               </button>
@@ -222,7 +203,7 @@ const TableData = () => {
           </div>
           <div className="flex items-center gap-x-[10px] md:gap-x-[25px] justify-end">
             <p className="w-full bg-[#357112] rounded-3xl py-[10px] px-[30px] text-white">
-              Total: {total}
+              Total: {totalAmount}
             </p>
             <button
               className="border border-[#357112] rounded-3xl py-[10px] px-[20px]"
@@ -246,47 +227,40 @@ const TableData = () => {
               </tr>
             </thead>
             <tbody>
-              {currentEntries
-                .sort((a, b) => {
-                  return (
-                    new Date(b.date_last_modified) -
-                    new Date(a.date_last_modified)
-                  );
-                })
-                .map((item, index) => (
-                  <tr
-                    key={index}
-                    className="bg-white border-b border-green-700 hover:bg-green-300">
-                    <th
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap font-mono">
-                      {item.id_num}
-                    </th>
-                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                      {item.first_sem === true ? "paid" : "unpaid"}
-                      <br />
-                      <span className="text-purple-900 italic font-mono">
-                        {item.first_sem_date}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                      {item.second_sem === true ? "paid" : "unpaid"}
-                      <br />
-                      <span className="text-purple-900 italic font-mono">
-                        {item.second_sem_date}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                      {item.enrolled_students.college}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                      {item.enrolled_students.stud_program}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                      {`${item.enrolled_students.lastname}, ${item.enrolled_students.firstname}`}
-                    </td>
-                  </tr>
-                ))}
+              {data.map((item, index) => (
+                <tr
+                  key={index}
+                  className="bg-white border-b border-green-700 hover:bg-green-300">
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap font-mono">
+                    {item.id_num}
+                  </th>
+                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    {item.first_sem === true ? "paid" : "unpaid"}
+                    <br />
+                    <span className="text-purple-900 italic font-mono">
+                      {item.first_sem_date}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    {item.second_sem === true ? "paid" : "unpaid"}
+                    <br />
+                    <span className="text-purple-900 italic font-mono">
+                      {item.second_sem_date}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    {item.enrolled_students.college}
+                  </td>
+                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    {item.enrolled_students.stud_program}
+                  </td>
+                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    {`${item.enrolled_students.lastname}, ${item.enrolled_students.firstname}`}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -331,7 +305,7 @@ const TableData = () => {
                 </select>
               </div>
               <button
-                onClick={() => setIsModal(false)}
+                onClick={handleButtonDone}
                 className="bg-[#357112] text-white rounded-md p-2 self-end">
                 Done
               </button>
@@ -349,17 +323,17 @@ const TableData = () => {
             } rounded-3xl py-2 px-5 mx-2`}
             onClick={handlePrevPage}
             disabled={currentPage === 1}>
-            {`<`}
+            {"<"}
           </button>
           <button
             className={`${
-              indexOfLastEntry >= filteredData.length
+              data.length < entriesPerPage
                 ? "bg-white text-white"
                 : "bg-[#357112] text-white"
             } rounded-3xl py-2 px-5 mx-2`}
             onClick={handleNextPage}
-            disabled={indexOfLastEntry >= filteredData.length}>
-            {`>`}
+            disabled={data.length < entriesPerPage}>
+            {">"}
           </button>
         </div>
       </div>

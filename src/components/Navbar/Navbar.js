@@ -104,7 +104,7 @@ const Navbar = () => {
       <link rel="icon" href={logoUrl} />
 
       <div className="w-screen justify-around items-center mt-2 hidden md:flex font-Montserrat select-none">
-        <div className="flex items-center w-full">
+        <div className="flex items-center w-full ml-6">
           <Image
             src="lco-logo-enhanced.svg"
             alt="LCO Logo"
