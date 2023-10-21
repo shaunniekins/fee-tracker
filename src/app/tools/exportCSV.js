@@ -15,7 +15,6 @@ export const handleExportToCSV = () => {
     } = await fetchTransactionDataForExport(1000, start, end);
 
     if (error) {
-      // setError(error);
     } else {
       if (!dataVal || dataVal.length === 0) {
         dataVal = data;
@@ -43,9 +42,6 @@ export const handleExportToCSV = () => {
       }
       isCalled = true;
     } while (breakCount > 1000);
-
-    // Log dataVal after all asynchronous calls are complete
-    // console.log("dataVa1l", dataVal);
 
     const csvData = [
       `"${title}"`,

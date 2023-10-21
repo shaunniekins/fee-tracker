@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-// import { fetchStudentData } from "@/app/data/new_data";
 import { fetchTransactionWithStudentData } from "@/app/data/transaction_data";
 import Navbar from "../Navbar/Navbar";
 import { handleExportToCSV } from "@/app/tools/exportCSV";
@@ -114,7 +113,6 @@ const TableData = () => {
         setError(error);
       } else {
         setData(student_data);
-        // console.log("student_data", student_data);
       }
     };
 

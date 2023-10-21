@@ -197,10 +197,7 @@ const Dashboard = () => {
 
   return (
     <div className="w-screen h-[100dvh] flex flex-col select-none">
-      <Navbar
-      // qrScannerVisible={qrScannerVisible}
-      // toggleQrScanner={() => setQrScannerVisible(!qrScannerVisible)}
-      />
+      <Navbar />
       {!qrScannerVisible ? (
         <div className="flex flex-col md:hidden justify-center items-center mt-[40px] mb-[-10px] ">
           <Image
@@ -297,12 +294,6 @@ const Dashboard = () => {
               <div className="w-full hidden md:flex"></div>
               <div className="w-full hidden md:flex"></div>
               <div className="w-full hidden md:flex"></div>
-              {/* <button
-            className="w-full order-2 md:order-6 bg-[#357112] rounded-3xl py-[25px] px-[50px] text-white "
-            // onClick={handleShowData}
-          >
-            Show Data
-          </button> */}
               <button
                 className="w-full order-1 md:order-7 bg-[#357112] hover:bg-purple-500 rounded-3xl py-[25px] px-[50px] text-white"
                 onClick={handlePay}>

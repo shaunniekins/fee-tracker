@@ -2,12 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Navbar from "../Navbar/Navbar";
-import { fetchStudentData } from "@/app/data/new_data";
-import { fetchTransactionData } from "@/app/data/transaction_data";
-import {
-  fetchTransactionDataForExport,
-  fetchTransactionWithStudentData,
-} from "@/app/data/transaction_data";
+import { fetchTransactionWithStudentData } from "@/app/data/transaction_data";
 
 const History = () => {
   const [idNumber, setIdNumber] = useState("");
@@ -20,7 +15,6 @@ const History = () => {
 
   const listInnerRef = useRef();
 
-  // useEffect(() => {
   const fetchData = async () => {
     try {
       const { data, error, count } = await fetchTransactionWithStudentData(
@@ -237,7 +231,6 @@ const History = () => {
         <button
           className={` self-center py-2 px-3 rounded-full mt-5 ${
             countDataAvailable >= currPage * itemsPerPage && "bg-green-200"
-            // : "bg-gray-200 text-gray-700"
           }`}
           onClick={handleScroll}
           disabled={!(countDataAvailable >= currPage * itemsPerPage)}>

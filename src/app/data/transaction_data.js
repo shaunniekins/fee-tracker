@@ -11,10 +11,10 @@ export const fetchTransactionData = async (idNumber) => {
     const { data, error } = await query;
 
     if (error) {
-      console.error("Error fetching student data:", error);
+      console.error("Error fetching data:", error);
       return { data: [], error };
     } else {
-      //   console.log("Student data:", data);
+      //   console.log("Data:", data);
       return { data, error: null };
     }
   } catch (error) {
@@ -55,12 +55,6 @@ export const fetchTransactionWithStudentData = async (
     `,
       { count: "exact" }
     );
-
-    // console.log("id: ", id);
-    // console.log("currentPage: ", currentPage);
-
-    // console.log("school_year: ", school_year);
-    // console.log("college: ", college);
 
     if (id) {
       query = query.like("id_num", `%${id}%`);
@@ -142,10 +136,10 @@ export const fetchTransactionSchoolYearData = async () => {
       .select();
 
     if (error) {
-      console.error("Error fetching student data:", error);
+      console.error("Error fetching data:", error);
       return { data: [], error };
     } else {
-      // console.log("Student data:", data);
+      // console.log("Data:", data);
       return { data, error: null };
     }
   } catch (error) {
@@ -247,10 +241,10 @@ export const insertTransactionData = async (rowData) => {
       .select("*");
 
     if (error) {
-      console.error("Error inserting student data:", error);
+      console.error("Error inserting data:", error);
       return { data: null, error };
     } else {
-      // console.log("Successfully inserted student data:", data);
+      // console.log("Successfully inserted data:", data);
       return { data, error: null };
     }
   } catch (error) {
@@ -269,10 +263,10 @@ export const updateTransactionData = async (idNum, schoolYear, updateData) => {
       .select("*");
 
     if (error) {
-      console.error("Error updating student data:", error);
+      console.error("Error updating data:", error);
       return { data: null, error };
     } else {
-      // console.log("Successfully updated student data:", data);
+      // console.log("Successfully updated data:", data);
       return { data, error: null };
     }
   } catch (error) {

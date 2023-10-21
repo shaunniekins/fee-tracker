@@ -7,10 +7,10 @@ export const fetchEnrolledStudentsData = async () => {
       .select("*");
 
     if (error) {
-      console.error("Error fetching student data:", error);
+      console.error("Error fetching data:", error);
       return { data: [], error };
     } else {
-      // console.log("Student data:", data);
+      // console.log("Data:", data);
       return { data, error: null };
     }
   } catch (error) {
@@ -24,10 +24,10 @@ export const fetchEnrolledStudentsCollegeData = async () => {
     const { data, error } = await supabase.from("distinct_college").select();
 
     if (error) {
-      console.error("Error fetching student data:", error);
+      console.error("Error fetching data:", error);
       return { data: [], error };
     } else {
-      // console.log("Student data:", data);
+      // console.log("Data:", data);
       return { data, error: null };
     }
   } catch (error) {

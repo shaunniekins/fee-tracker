@@ -5,10 +5,10 @@ export const fetchSettingsData = async () => {
     const { data, error } = await supabase.from("settings").select("*");
 
     if (error) {
-      console.error("Error fetching settings data:", error);
+      console.error("Error fetching data:", error);
       return { data: [], error };
     } else {
-      //   console.log("Settings data:", data);
+      //   console.log("Data:", data);
       return { data, error: null };
     }
   } catch (error) {
@@ -26,10 +26,10 @@ export const updateSettingsData = async (id, updateData) => {
       .select("*");
 
     if (error) {
-      console.error("Error updating settings data:", error);
+      console.error("Error updating data:", error);
       return { data: null, error };
     } else {
-      // console.log("Successfully updated settings data:", data);
+      // console.log("Successfully updated data:", data);
       return { data, error: null };
     }
   } catch (error) {
