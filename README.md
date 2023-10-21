@@ -1,34 +1,65 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# LCO Fee Tracker Web Application
+
+The LCO Fee Tracker is a web application designed for LCO (Local Cable Operator) officers to manage and keep track of transactions related to LCO fees from students. With this application, LCO officers can easily record and access information about student payments, helping them keep track of who has paid, when the payment was made, and other relevant details.
+
+## Features
+
+**User Authentication:** Utilizes Supabase for user authentication, ensuring that only authorized users can access the application.
+
+**Transaction Management:** LCO officers can record transactions, including the student's details, payment amount, date, and other relevant information.
+
+**Payment History:** The application maintains a comprehensive payment history, allowing users to review past transactions and payments.
+
+## Technologies Used
+
+**Next.js:** A React framework for building server-rendered React applications.
+
+**Tailwind CSS:** A utility-first CSS framework for building modern and responsive web interfaces.
+
+**Supabase:** An open-source alternative to Firebase, Supabase provides a PostgreSQL database with real-time capabilities and authentication features.
+
+**Supabase Authentication:** Supabase's built-in authentication system ensures secure and user-friendly access control to the application.
 
 ## Getting Started
 
-First, run the development server:
+Follow these steps to set up the LCO Fee Tracker web application locally:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+1. **Clone the Repository:**
+
+```
+git clone https://github.com/shaunniekins/lco-fee-tracker.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Install Dependencies:**
+   Navigate to the project directory and install the required dependencies.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```
+cd lco-fee-tracker
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+3. **Set Up Supabase:**
 
-## Learn More
+- Create a Supabase project and set up a PostgreSQL database.
+- Configure Supabase Authentication and obtain the required API keys.
+- Update the .env.local file with your Supabase project and authentication credentials.
 
-To learn more about Next.js, take a look at the following resources:
+4. **Start the Development Server:**
+   Run the development server to start the application locally.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+5. **Access the Application:**
+   Open your web browser and go to http://localhost:8090/ to access the LCO Fee Tracker.
 
-## Deploy on Vercel
+## Usage
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Once the application is set up, LCO officers can:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+**Sign in:** Use their Supabase authentication credentials to log in to the application.
+
+**Record Transactions:** Add new transactions, providing the student's details, payment amount, date, and additional information.
+
+**View Payment History:** Access the payment history to review and search for past transactions.

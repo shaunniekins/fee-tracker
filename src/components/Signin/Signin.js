@@ -94,6 +94,7 @@ const Signin = () => {
             alt="LCO Logo"
             width={120}
             height={120}
+            priority
           />
           <div className="text-center">
             <h3 className="font-Montserrat text-white text-xs leading-tight ">
