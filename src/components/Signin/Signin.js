@@ -88,19 +88,20 @@ const Signin = () => {
         <Indicator msg={indicatorMsg} status={indicatorStatus} />
       )}
       <div className="w-screen h-[100dvh] flex flex-col items-center justify-center font-Montserrat bg-[#357112] gap-y-10 px-5">
-        <div className="flex flex-col items-center top-0 absolute mt-10 space-y-3">
-          <Image
+        <div className="flex flex-col items-center top-0 absolute m-5 md:mt-10 space-y-3">
+          <img
             src="lco-logo-enhanced.svg"
             alt="LCO Logo"
-            width={120}
-            height={120}
-            priority
+            // width={120}
+            // height={120}
+            className={"w-[80px] h-[80px] md:w-[120px] md:h-[120px]"}
+            // priority
           />
           <div className="text-center">
-            <h3 className="font-Montserrat text-white text-xs leading-tight ">
+            <h3 className="font-Montserrat text-white text-[10px] md:text-xs leading-tight ">
               Caraga State University
             </h3>
-            <h2 className="font-Montserrat text-white text-lg font-semibold tracking-wider">
+            <h2 className="font-Montserrat text-white text-md md:text-lg font-semibold tracking-wider">
               LCO Fee Tracker
             </h2>
           </div>
@@ -124,18 +125,6 @@ const Signin = () => {
                 placeholder="Enter Your Email"
                 className="w-full h-[50px] mb-[18px] text-[14px] bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] pl-[21.7px]"
               />
-              {/* <input
-                type="password"
-                name="password"
-                value={password}
-                onChange={handlePasswordChange}
-                required
-                placeholder="Enter Your Password"
-                className="w-full h-[50px] mb-[5px] text-[14px] bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] pl-[21.7px]"
-              />
-              <button className="mb-[8px]" onClick={handleForgottenPassword}>
-                <h4 className="text-[12px]">Forgot Password?</h4>
-              </button> */}
               <input
                 type="password"
                 name="password"

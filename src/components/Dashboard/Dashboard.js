@@ -11,8 +11,11 @@ import {
 
 import { fetchSettingsData } from "@/app/data/settings_data";
 
+import { insertEnrolledStudentData } from "@/app/data/enrolled_students_data";
+
 import QRCodeScanner from "../QrScanner/QrScanner";
 import Image from "next/image";
+import { fetchEnrolledStudentsData } from "@/app/data/enrolled_students_data";
 
 const Dashboard = () => {
   const [idNumber, setIdNumber] = useState("");
@@ -163,9 +166,21 @@ const Dashboard = () => {
         setIndicatorStatus(false);
         handleTimeout();
       } else {
+        const { data: enrolledStudentData } = await fetchEnrolledStudentsData();
+        const enrolledStudent = enrolledStudentData.find(
+          (item) => item.idnumber === idNumber
+        );
+
+        // not recommended: but need to utilize
+        if (!enrolledStudent) {
+          const enrollNewStudent = {
+            idnumber: idNumber,
+          };
+          await insertEnrolledStudentData(enrollNewStudent);
+        }
+
         // Add new student's data for 1st semester
         const now = new Date();
-
         // Get the current date in the user's local time zone
         const localDate = now.toLocaleDateString(undefined, {
           year: "numeric",
