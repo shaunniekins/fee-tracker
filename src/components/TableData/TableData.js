@@ -9,8 +9,12 @@ import {
   fetchTransactionCountTotalData,
 } from "@/app/data/transaction_data";
 
+import { fetchEnrolledStudentsData } from "@/app/data/enrolled_students_data";
+
 const TableData = () => {
   const [data, setData] = useState([]);
+  const [otherData, setOtherData] = useState([]);
+  const [completeData, setCompleteData] = useState([]);
   const [idNumber, setIdNumber] = useState("");
   const [error, setError] = useState(null);
   const [isFilterToggle, setIsFilterToggle] = useState(false);
@@ -21,6 +25,7 @@ const TableData = () => {
   const [uniqueSchoolYears, setUniqueSchoolYears] = useState([]);
   const [isBtnClicked, setIsBtnClicked] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [idNumbersPresent, setIdNumbersPresent] = useState([]);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -98,21 +103,83 @@ const TableData = () => {
     fetchData();
   }, []);
 
+  // useEffect(() => {
+  //   // Fetch both data and otherData
+  //   const fetchData = async () => {
+  //     try {
+  //       let dataQuery = fetchTransactionWithStudentData(
+  //         entriesPerPage,
+  //         currentPage,
+  //         idNumber,
+  //         selectedSchoolYear
+  //       );
+
+  //       // If a college is selected, filter enrolled students data based on the college
+  //       if (selectedCollege) {
+  //         const { data: enrolledStudentsData, error: enrolledStudentsError } =
+  //           await fetchEnrolledStudentsData([], selectedCollege);
+
+  //         if (enrolledStudentsError) {
+  //           setError(enrolledStudentsError);
+  //         } else {
+  //           // Get id numbers from the enrolled students data
+  //           const idNumbers = enrolledStudentsData.map((item) => item.idnumber);
+  //           // Update the data query to filter by id numbers
+  //           dataQuery = fetchTransactionWithStudentData(
+  //             entriesPerPage,
+  //             currentPage,
+  //             idNumber,
+  //             selectedSchoolYear,
+  //             idNumbers
+  //           );
+  //           setOtherData(enrolledStudentsData);
+  //         }
+  //       }
+
+  //       const { data: dataResult, error: dataError } = await dataQuery;
+
+  //       if (dataError) {
+  //         setError(dataError);
+  //       } else {
+  //         setData(dataResult);
+  //       }
+  //     } catch (error) {
+  //       console.error("An error occurred:", error);
+  //       setError(error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [
+  //   entriesPerPage,
+  //   currentPage,
+  //   idNumber,
+  //   selectedSchoolYear,
+  //   selectedCollege,
+  //   isFilterToggle,
+  // ]);
+
   useEffect(() => {
     const fetchData = async () => {
-      const { data: student_data, error } =
-        await fetchTransactionWithStudentData(
-          entriesPerPage,
-          currentPage,
-          idNumber,
-          selectedSchoolYear,
-          selectedCollege
-        );
-
-      if (error) {
+      try {
+        const { data, error, status, count } =
+          await fetchTransactionWithStudentData(
+            entriesPerPage,
+            currentPage,
+            idNumber,
+            selectedSchoolYear,
+            selectedCollege
+          );
+        if (error) {
+          setError(error);
+        } else {
+          // setTotalAmount(count * 100);
+          // console.log("data", data);
+          setData(data);
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
         setError(error);
-      } else {
-        setData(student_data);
       }
     };
 
@@ -248,15 +315,18 @@ const TableData = () => {
                       {item.second_sem_date}
                     </span>
                   </td>
+
                   <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                    {item.enrolled_students.college}
+                    {item.college}
                   </td>
+
                   <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                    {item.enrolled_students.stud_program}
+                    {item.stud_program}
                   </td>
-                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                    {`${item.enrolled_students.lastname}, ${item.enrolled_students.firstname}`}
-                  </td>
+
+                  {/* <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    {`${item.lastname.toUpperCase()}, ${item.firstname.toUpperCase()}`}
+                  </td> */}
                 </tr>
               ))}
             </tbody>
@@ -295,11 +365,19 @@ const TableData = () => {
                   value={selectedCollege}
                   onChange={(e) => setSelectedCollege(e.target.value)}>
                   <option value="">All</option>
-                  {uniqueColleges.map((college, index) => (
+                  {/* {uniqueColleges.map((college, index) => (
                     <option key={index} value={college}>
                       {college}
                     </option>
-                  ))}
+                  ))} */}
+                  <option value="CAA">CAA</option>
+                  <option value="CCIS">CCIS</option>
+                  <option value="CEd">CEd</option>
+                  <option value="CEGS">CEGS</option>
+                  <option value="CFES">CFES</option>
+                  <option value="CHaSS">CHaSS</option>
+                  <option value="CMNS">CMNS</option>
+                  <option value="SS">SS</option>
                 </select>
               </div>
               <button

@@ -1,10 +1,17 @@
 import { supabase } from "../../../supabase";
 
-export const fetchEnrolledStudentsData = async () => {
+export const fetchEnrolledStudentsData = async (idNumbers, college) => {
   try {
-    const { data, error } = await supabase
-      .from("enrolled_students")
-      .select("*");
+    let query = supabase.from("enrolled_students").select("*");
+
+    if (idNumbers) {
+      query = query.in("idnumber", idNumbers);
+    }
+    if (college) {
+      query = query.eq("college", college);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error("Error fetching data:", error);

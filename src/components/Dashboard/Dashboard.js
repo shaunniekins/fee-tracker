@@ -25,9 +25,11 @@ const Dashboard = () => {
 
   // Initialize default values from localStorage or use the provided defaults
   const defaultSemester = localStorage.getItem("semester") || "1st Semester";
+  const defaultCollege = localStorage.getItem("college") || "CAA";
 
   // State to manage the selected values
   const [semester, setSemester] = useState(defaultSemester);
+  const [college, setCollege] = useState(defaultCollege);
   const [schoolYear, setSchoolYear] = useState(" - ");
 
   useEffect(() => {
@@ -49,8 +51,8 @@ const Dashboard = () => {
   useEffect(() => {
     // Update localStorage when the selected values change
     localStorage.setItem("semester", semester);
-    // localStorage.setItem("college", college);
-  }, [semester]);
+    localStorage.setItem("college", college);
+  }, [semester, college]);
 
   const handleQRScan = (data) => {
     setIdNumber(data);
@@ -166,18 +168,18 @@ const Dashboard = () => {
         setIndicatorStatus(false);
         handleTimeout();
       } else {
-        const { data: enrolledStudentData } = await fetchEnrolledStudentsData();
-        const enrolledStudent = enrolledStudentData.find(
-          (item) => item.idnumber === idNumber
-        );
+        // const { data: enrolledStudentData } = await fetchEnrolledStudentsData();
+        // const enrolledStudent = enrolledStudentData.find(
+        //   (item) => item.idnumber === idNumber
+        // );
 
-        // not recommended: but need to utilize
-        if (!enrolledStudent) {
-          const enrollNewStudent = {
-            idnumber: idNumber,
-          };
-          await insertEnrolledStudentData(enrollNewStudent);
-        }
+        // // not recommended: but need to utilize
+        // if (!enrolledStudent) {
+        //   const enrollNewStudent = {
+        //     idnumber: idNumber,
+        //   };
+        //   await insertEnrolledStudentData(enrollNewStudent);
+        // }
 
         // Add new student's data for 1st semester
         const now = new Date();
@@ -197,7 +199,7 @@ const Dashboard = () => {
           second_sem: false,
           second_sem_date: null,
           second_sem_time: null,
-          // college: document.getElementById("college").value,
+          college: document.getElementById("college").value,
           date_last_modified: `${localDate} ${now.toLocaleTimeString()}`,
         };
 
@@ -278,7 +280,23 @@ const Dashboard = () => {
                 <option value="1st Semester">1st Semester</option>
                 <option value="2nd Semester">2nd Semester</option>
               </select>
-              <div className="w-full" />
+
+              <select
+                className="w-full py-[25px] rounded-3xl bg-transparent border-2 border-[#357112] text-center appearance-none"
+                id="college"
+                name="college"
+                value={college}
+                onChange={(e) => setCollege(e.target.value)}>
+                <option value="CAA">CAA</option>
+                <option value="CCIS">CCIS</option>
+                <option value="CEd">CEd</option>
+                <option value="CEGS">CEGS</option>
+                <option value="CFES">CFES</option>
+                <option value="CHaSS">CHaSS</option>
+                <option value="CMNS">CMNS</option>
+                <option value="SS">SS</option>
+              </select>
+              {/* <div className="w-full" /> */}
             </div>
             <div className="w-full relative">
               <input

@@ -33,49 +33,68 @@ export const fetchTransactionWithStudentData = async (
   try {
     const offset = (currentPage - 1) * entriesPerPage;
 
-    let query = supabase.from("transaction_data").select(
+    // Fetch transaction data
+    let transactionQuery = supabase.from("transaction_data").select(
       `
-      id_num,
-      school_year,
-      first_sem,
-      first_sem_date,
-      first_sem_time,
-      second_sem,
-      second_sem_time,
-      second_sem_date,
-      enrolled_students!inner (
-        lastname,
-        firstname,
-        middlename,
-        extname,
-        stud_program,
-        college
-      ),
-      date_last_modified
-    `,
+        id_num,
+        school_year,
+        first_sem,
+        first_sem_date,
+        first_sem_time,
+        second_sem,
+        second_sem_time,
+        second_sem_date,
+        date_last_modified
+      `,
       { count: "exact" }
     );
 
     if (id) {
-      query = query.like("id_num", `%${id}%`);
+      transactionQuery = transactionQuery.like("id_num", `%${id}%`);
     }
     if (school_year !== "") {
-      query = query.eq("school_year", school_year);
+      transactionQuery = transactionQuery.eq("school_year", school_year);
     }
     if (college) {
-      query = query.filter("enrolled_students.college", "eq", college);
+      transactionQuery = transactionQuery.eq("college", college);
     }
 
-    const { data, error, count } = await query
-      .order("date_last_modified", { ascending: false })
-      .range(offset, offset + entriesPerPage - 1);
+    const { data: transactionData, error: transactionError } =
+      await transactionQuery
+        .order("date_last_modified", { ascending: false })
+        .range(offset, offset + entriesPerPage - 1);
 
-    if (error) {
-      console.error("Error fetching student data:", error);
-      return { data: [], error };
-    } else {
-      return { data, error: null, count };
+    if (transactionError) {
+      console.error("Error fetching transaction data:", transactionError);
+      return { data: [], error: transactionError };
     }
+
+    // Extract the idnumbers from transaction data
+    const idNumbers = transactionData.map((item) => item.id_num);
+
+    // Fetch student data matching the extracted idnumbers
+    let studentQuery = supabase.from("enrolled_students").select("*");
+
+    if (idNumbers.length > 0) {
+      studentQuery = studentQuery.in("idnumber", idNumbers);
+    }
+
+    const { data: studentData, error: studentError } = await studentQuery;
+
+    if (studentError) {
+      console.error("Error fetching student data:", studentError);
+      return { data: [], error: studentError };
+    }
+
+    // Merge the data from both queries based on the common key (id_num and idnumber)
+    const mergedData = transactionData.map((transaction) => {
+      const matchingStudent = studentData.find(
+        (student) => student.idnumber === transaction.id_num
+      );
+      return { ...transaction, ...matchingStudent };
+    });
+
+    return { data: mergedData, error: null };
   } catch (error) {
     console.error("An error occurred:", error);
     return { data: [], error };
@@ -84,7 +103,7 @@ export const fetchTransactionWithStudentData = async (
 
 export const fetchTransactionDataForExport = async (valueLimit, start, end) => {
   try {
-    let query = supabase.from("transaction_data").select(
+    let transactionQuery = supabase.from("transaction_data").select(
       `
       id_num,
       school_year,
@@ -94,35 +113,58 @@ export const fetchTransactionDataForExport = async (valueLimit, start, end) => {
       second_sem,
       second_sem_time,
       second_sem_date,
-      enrolled_students!inner (
-        lastname,
-        firstname,
-        middlename,
-        extname,
-        stud_program,
-        college
-      ),
       date_last_modified
     `,
       { count: "exact" }
     );
 
     if (start && end) {
-      query = query.range(start, end);
+      transactionQuery = transactionQuery.range(start, end);
     }
     if (valueLimit) {
-      query = query.limit(valueLimit);
+      transactionQuery = transactionQuery.limit(valueLimit);
     }
 
-    const { data, error, status, count } = await query;
+    const {
+      data: transactionData,
+      error: transactionError,
+      status,
+      count,
+    } = await transactionQuery.order("date_last_modified", {
+      ascending: false,
+    });
 
-    if (error) {
-      console.error("Error fetching data:", error);
-      return { data: [], error };
-    } else {
-      // console.log("server data", data);
-      return { data, error: null, status, count };
+    if (transactionError) {
+      console.error("Error fetching transaction data:", transactionError);
+      return { data: [], error: transactionError };
     }
+
+    // Extract the idnumbers from transaction data
+    const idNumbers = transactionData.map((item) => item.id_num);
+
+    // Fetch student data matching the extracted idnumbers
+    let studentQuery = supabase.from("enrolled_students").select("*");
+
+    if (idNumbers.length > 0) {
+      studentQuery = studentQuery.in("idnumber", idNumbers);
+    }
+
+    const { data: studentData, error: studentError } = await studentQuery;
+
+    if (studentError) {
+      console.error("Error fetching student data:", studentError);
+      return { data: [], error: studentError };
+    }
+
+    // Merge the data from both queries based on the common key (id_num and idnumber)
+    const mergedData = transactionData.map((transaction) => {
+      const matchingStudent = studentData.find(
+        (student) => student.idnumber === transaction.id_num
+      );
+      return { ...transaction, ...matchingStudent };
+    });
+
+    return { data: mergedData, error: null };
   } catch (error) {
     console.error("An error occurred:", error);
     return { data: [], error };
@@ -171,14 +213,7 @@ export const fetchTransactionCountTotalData = async (
         second_sem,
         second_sem_time,
         second_sem_date,
-        enrolled_students!inner (
-          lastname,
-          firstname,
-          middlename,
-          extname,
-          stud_program,
-          college
-        ),
+      
         date_last_modified
       `,
           { count: "exact", head: true }
@@ -191,14 +226,14 @@ export const fetchTransactionCountTotalData = async (
       if (school_year !== "") {
         query.eq("school_year", school_year);
       }
-      if (college) {
-        query.filter("enrolled_students.college", "eq", college);
-      }
+      // if (college) {
+      //   query.filter("enrolled_students.college", "eq", college);
+      // }
 
       const { data, error, status, count } = await query;
 
       if (error) {
-        console.error("Error fetching student data:", error);
+        console.error("Error fetching student data:2", error);
         return { data: [], error };
       } else {
         totalCount += count;
