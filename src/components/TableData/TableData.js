@@ -277,7 +277,7 @@ const TableData = () => {
             </button>
           </div>
         </div>
-        <div className="w-full overflow-x-auto rounded-t-3xl h-[70vh]">
+        <div className="w-full overflow-x-auto rounded-t-3xl h-[70dvh]">
           <table className="w-full text-sm text-center">
             <thead className="text-xs uppercase bg-[#357112] text-white">
               <tr>
@@ -324,9 +324,11 @@ const TableData = () => {
                     {item.stud_program}
                   </td>
 
-                  {/* <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                    {`${item.lastname.toUpperCase()}, ${item.firstname.toUpperCase()}`}
-                  </td> */}
+                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    {item.firstname &&
+                      item.lastname &&
+                      `${item.lastname.toUpperCase()}, ${item.firstname.toUpperCase()}`}
+                  </td>
                 </tr>
               ))}
             </tbody>

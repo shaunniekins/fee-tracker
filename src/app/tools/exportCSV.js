@@ -56,11 +56,10 @@ export const handleExportToCSV = () => {
       const second_sem_date = enrolledStudent.second_sem_date;
       const college = enrolledStudent.college;
       const stud_program = enrolledStudent.stud_program;
-      const lastname = enrolledStudent.lastname.toUpperCase();
-      const firstname = enrolledStudent.firstname.toUpperCase();
-      const middlename = enrolledStudent.middlename.toUpperCase();
-      const extname = enrolledStudent.extname.toUpperCase();
-
+      const lastname = enrolledStudent.lastname;
+      const firstname = enrolledStudent.firstname;
+      const middlename = enrolledStudent.middlename;
+      const extname = enrolledStudent.extname;
       const row = [
         `"${id_num}"`,
         `"${first_sem}"`,
