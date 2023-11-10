@@ -1,4 +1,4 @@
-import { supabase } from "../../../supabase";
+import { supabase } from "../../supabase";
 
 export const fetchTransactionData = async (idNumber) => {
   try {
@@ -55,7 +55,7 @@ export const fetchTransactionWithStudentData = async (
     if (school_year !== "") {
       transactionQuery = transactionQuery.eq("school_year", school_year);
     }
-    if (college) {
+    if (college !== "") {
       transactionQuery = transactionQuery.eq("college", college);
     }
 

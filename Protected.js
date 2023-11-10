@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 import { useRouter } from "next/navigation";
-import { ThreeDots, ProgressBar } from "react-loader-spinner";
+import LoadingThreeDots from "@/components/LoadingDots/LoadingThreeDots";
 
 const Protected = ({ children }) => {
   const router = useRouter();
@@ -34,21 +34,7 @@ const Protected = ({ children }) => {
   }, []);
 
   if (isLoading) {
-    // You can show a loading spinner or message while checking authentication.
-    return (
-      <div className="flex w-screen h-[100dvh] justify-center items-center">
-        <ThreeDots
-          height="80"
-          width="80"
-          radius="9"
-          color="#4fa94d"
-          ariaLabel="three-dots-loading"
-          wrapperStyle={{}}
-          wrapperClassName=""
-          visible={true}
-        />
-      </div>
-    );
+    <LoadingThreeDots />;
   }
 
   if (!user) {

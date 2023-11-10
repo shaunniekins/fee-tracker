@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Signin from "../../components/Signin/Signin";
+import Signin from "./Signin";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "../../../supabase";
-import { ThreeDots } from "react-loader-spinner";
+import LoadingThreeDots from "@/components/LoadingDots/LoadingThreeDots";
 
 export default function SigninRoute() {
   const router = useRouter();
@@ -38,20 +38,7 @@ export default function SigninRoute() {
   }, [pathname]);
 
   if (isLoading) {
-    return (
-      <div className="flex w-screen h-[100dvh] justify-center items-center">
-        <ThreeDots
-          height="80"
-          width="80"
-          radius="9"
-          color="#4fa94d"
-          ariaLabel="three-dots-loading"
-          wrapperStyle={{}}
-          wrapperClassName=""
-          visible={true}
-        />
-      </div>
-    );
+    return <LoadingThreeDots />;
   }
 
   if (!user) {

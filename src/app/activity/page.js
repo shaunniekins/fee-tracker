@@ -1,10 +1,15 @@
-import TableData from "@/components/TableData/TableData";
-import Protected from "../../../Protected";
+import { Suspense } from "react";
 
-export default function DashboardActivityRoute() {
+import TableData from "./TableData";
+import Protected from "../../../Protected";
+import LoadingThreeDots from "@/components/LoadingDots/LoadingThreeDots";
+
+export default function ActivityRoute() {
   return (
-    <Protected>
-      <TableData />
-    </Protected>
+    <Suspense fallback={<LoadingThreeDots />}>
+      <Protected>
+        <TableData />
+      </Protected>
+    </Suspense>
   );
 }

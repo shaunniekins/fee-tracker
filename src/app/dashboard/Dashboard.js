@@ -1,21 +1,18 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Navbar from "../Navbar/Navbar";
-import Indicator from "../Indicator/Indicator";
+import Image from "next/image";
+
+import Navbar from "../../components/Navbar/Navbar";
+import Indicator from "../../components/Indicator/Indicator";
+import QRCodeScanner from "../../components/QrScanner/QrScanner";
+
 import {
   fetchTransactionData,
   insertTransactionData,
   updateTransactionData,
-} from "@/app/data/transaction_data";
-
-import { fetchSettingsData } from "@/app/data/settings_data";
-
-import { insertEnrolledStudentData } from "@/app/data/enrolled_students_data";
-
-import QRCodeScanner from "../QrScanner/QrScanner";
-import Image from "next/image";
-import { fetchEnrolledStudentsData } from "@/app/data/enrolled_students_data";
+} from "@/data/transaction_data";
+import { fetchSettingsData } from "@/data/settings_data";
 
 const Dashboard = () => {
   const [idNumber, setIdNumber] = useState("");
@@ -23,11 +20,9 @@ const Dashboard = () => {
   const [indicatorStatus, setIndicatorStatus] = useState(true);
   const [qrScannerVisible, setQrScannerVisible] = useState(false);
 
-  // Initialize default values from localStorage or use the provided defaults
   const defaultSemester = localStorage.getItem("semester") || "1st Semester";
   const defaultCollege = localStorage.getItem("college") || "CAA";
 
-  // State to manage the selected values
   const [semester, setSemester] = useState(defaultSemester);
   const [college, setCollege] = useState(defaultCollege);
   const [schoolYear, setSchoolYear] = useState(" - ");
@@ -38,8 +33,7 @@ const Dashboard = () => {
         const { data: settingsData } = await fetchSettingsData();
         const settings = settingsData;
 
-        setSchoolYear(settings[0].school_year);
-        // console.log("school_year", settings[0].id);
+        settingsData && setSchoolYear(settings[0].school_year);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -49,7 +43,6 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    // Update localStorage when the selected values change
     localStorage.setItem("semester", semester);
     localStorage.setItem("college", college);
   }, [semester, college]);
@@ -76,7 +69,7 @@ const Dashboard = () => {
 
   const handleEnterKey = (event) => {
     if (event.key === "Enter") {
-      event.preventDefault(); // Prevent the default form submission behavior
+      event.preventDefault();
 
       handlePay();
     }
@@ -84,9 +77,9 @@ const Dashboard = () => {
 
   const handleTimeout = () => {
     setTimeout(() => {
-      setIndicatorMsg(""); // Clear the message
-      setIndicatorStatus(true); // Hide the indicator
-    }, 3000); // 3000 milliseconds (3 seconds)
+      setIndicatorMsg("");
+      setIndicatorStatus(true);
+    }, 3000);
   };
 
   const handlePay = async () => {
@@ -213,8 +206,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="w-screen h-[100dvh] flex flex-col select-none">
-      <Navbar />
+    <>
       {!qrScannerVisible ? (
         <div className="flex flex-col md:hidden justify-center items-center mt-[40px] mb-[-10px] ">
           <Image
@@ -234,7 +226,8 @@ const Dashboard = () => {
       ) : (
         ""
       )}
-      <div className="flex flex-col flex-grow justify-center py-3 px-5 sm:px-10 lg:px-52 xl:px-96 font-Montserrat ">
+      <div className="flex flex-col flex-grow justify-center py-3 px-5 md:px-0 2xl:px-64 font-Montserrat ">
+        {/* py-3 md:py-7 px-5 sm:px-10 lg:px-52 2xl:px-[350px] */}
         {indicatorMsg && !qrScannerVisible && (
           <Indicator msg={indicatorMsg} status={indicatorStatus} />
         )}
@@ -265,12 +258,6 @@ const Dashboard = () => {
         ) : (
           <>
             <div className="w-full flex flex-col md:flex-row gap-y-[25px] md:gap-y-0 md:gap-x-[25px] mb-[25px] text-[20px]">
-              <p
-                className="w-full py-[25px] rounded-3xl border-2
-                border-[#357112] text-center">
-                {schoolYear}
-              </p>
-
               <select
                 className="w-full py-[25px] rounded-3xl bg-transparent border-2 border-[#357112] text-center appearance-none"
                 id="semester"
@@ -280,23 +267,34 @@ const Dashboard = () => {
                 <option value="1st Semester">1st Semester</option>
                 <option value="2nd Semester">2nd Semester</option>
               </select>
+              {semester === "2nd Semester" && <div className="w-full" />}
+              {semester === "1st Semester" && (
+                <p
+                  className="w-full py-[25px] rounded-3xl border-2
+                border-[#357112] text-center">
+                  {schoolYear}
+                </p>
+              )}
 
-              <select
-                className="w-full py-[25px] rounded-3xl bg-transparent border-2 border-[#357112] text-center appearance-none"
-                id="college"
-                name="college"
-                value={college}
-                onChange={(e) => setCollege(e.target.value)}>
-                <option value="CAA">CAA</option>
-                <option value="CCIS">CCIS</option>
-                <option value="CEd">CEd</option>
-                <option value="CEGS">CEGS</option>
-                <option value="CFES">CFES</option>
-                <option value="CHaSS">CHaSS</option>
-                <option value="CMNS">CMNS</option>
-                <option value="SS">SS</option>
-              </select>
-              {/* <div className="w-full" /> */}
+              {semester === "1st Semester" ? (
+                <select
+                  className="w-full py-[25px] rounded-3xl bg-transparent border-2 border-[#357112] text-center appearance-none"
+                  id="college"
+                  name="college"
+                  value={college}
+                  onChange={(e) => setCollege(e.target.value)}>
+                  <option value="CAA">CAA</option>
+                  <option value="CCIS">CCIS</option>
+                  <option value="CEd">CEd</option>
+                  <option value="CEGS">CEGS</option>
+                  <option value="CFES">CFES</option>
+                  <option value="CHaSS">CHaSS</option>
+                  <option value="CMNS">CMNS</option>
+                  <option value="SS">SS</option>
+                </select>
+              ) : (
+                <div className="w-full" />
+              )}
             </div>
             <div className="w-full relative">
               <input
@@ -328,7 +326,7 @@ const Dashboard = () => {
               <div className="w-full hidden md:flex"></div>
               <div className="w-full hidden md:flex"></div>
               <button
-                className="w-full order-1 md:order-7 bg-[#357112] hover:bg-purple-500 rounded-3xl py-[25px] px-[50px] text-white"
+                className="w-full order-1 md:order-7 bg-[#357112] hover:bg-purple-500 rounded-3xl py-[25px] px-[50px] text-white transition delay-75 duration-300 ease-in-out"
                 onClick={handlePay}>
                 Pay
               </button>
@@ -336,7 +334,7 @@ const Dashboard = () => {
           </>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

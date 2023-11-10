@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../../../supabase";
-import Indicator from "../Indicator/Indicator";
+import Indicator from "../../components/Indicator/Indicator";
 import Image from "next/image";
 
 const Signin = () => {

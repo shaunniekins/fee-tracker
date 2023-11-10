@@ -1,4 +1,4 @@
-import { fetchTransactionDataForExport } from "../data/transaction_data";
+import { fetchTransactionDataForExport } from "@/data/transaction_data";
 
 export const handleExportToCSV = () => {
   const currentDate = new Date().toISOString().slice(0, 10);

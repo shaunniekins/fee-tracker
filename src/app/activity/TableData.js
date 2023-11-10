@@ -1,15 +1,14 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { fetchTransactionWithStudentData } from "@/app/data/transaction_data";
-import Navbar from "../Navbar/Navbar";
-import { handleExportToCSV } from "@/app/tools/exportCSV";
-import { fetchEnrolledStudentsCollegeData } from "@/app/data/enrolled_students_data";
+import React, { useState, useEffect, useMemo } from "react";
+
+import { fetchTransactionWithStudentData } from "@/data/transaction_data";
+import { handleExportToCSV } from "@/tools/exportCSV";
+import { fetchEnrolledStudentsCollegeData } from "@/data/enrolled_students_data";
 import {
   fetchTransactionSchoolYearData,
   fetchTransactionCountTotalData,
-} from "@/app/data/transaction_data";
-
-import { fetchEnrolledStudentsData } from "@/app/data/enrolled_students_data";
+} from "@/data/transaction_data";
+import { fetchEnrolledStudentsData } from "@/data/enrolled_students_data";
 
 const TableData = () => {
   const [data, setData] = useState([]);
@@ -92,7 +91,10 @@ const TableData = () => {
             ...new Set(data.map((item) => item.school_year)),
           ];
           setUniqueSchoolYears(uniqueSchoolYears);
-          setSelectedSchoolYear(uniqueSchoolYears[0] || "");
+
+          // Sort uniqueSchoolYears in descending order and select the first element
+          const latestSchoolYear = uniqueSchoolYears.sort().reverse()[0];
+          setSelectedSchoolYear(latestSchoolYear || "");
         }
       } catch (error) {
         console.error("An error occurred:", error);
@@ -103,118 +105,75 @@ const TableData = () => {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   // Fetch both data and otherData
-  //   const fetchData = async () => {
-  //     try {
-  //       let dataQuery = fetchTransactionWithStudentData(
-  //         entriesPerPage,
-  //         currentPage,
-  //         idNumber,
-  //         selectedSchoolYear
-  //       );
+  const fetchStudentData = async () => {
+    try {
+      const { data, error, status, count } =
+        await fetchTransactionWithStudentData(
+          entriesPerPage,
+          currentPage,
+          idNumber,
+          selectedSchoolYear,
+          selectedCollege
+        );
+      if (error) {
+        setError(error);
+      } else {
+        // setTotalAmount(count * 100);
+        // console.log("data", data);
+        setData(data);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      setError(error);
+    }
+  };
 
-  //       // If a college is selected, filter enrolled students data based on the college
-  //       if (selectedCollege) {
-  //         const { data: enrolledStudentsData, error: enrolledStudentsError } =
-  //           await fetchEnrolledStudentsData([], selectedCollege);
+  const fetchTotalAmount = async () => {
+    try {
+      const { data, error, status, count } =
+        await fetchTransactionCountTotalData(
+          idNumber,
+          selectedSchoolYear,
+          selectedCollege
+        );
+      if (error) {
+        setError(error);
+      } else {
+        setTotalAmount(count * 100);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      setError(error);
+    }
+  };
 
-  //         if (enrolledStudentsError) {
-  //           setError(enrolledStudentsError);
-  //         } else {
-  //           // Get id numbers from the enrolled students data
-  //           const idNumbers = enrolledStudentsData.map((item) => item.idnumber);
-  //           // Update the data query to filter by id numbers
-  //           dataQuery = fetchTransactionWithStudentData(
-  //             entriesPerPage,
-  //             currentPage,
-  //             idNumber,
-  //             selectedSchoolYear,
-  //             idNumbers
-  //           );
-  //           setOtherData(enrolledStudentsData);
-  //         }
-  //       }
+  // Memoize the data-fetching functions
+  const memoizedFetchData = useMemo(
+    () => fetchStudentData,
+    [
+      entriesPerPage,
+      currentPage,
+      idNumber,
+      selectedSchoolYear,
+      selectedCollege,
+      isFilterToggle,
+    ]
+  );
 
-  //       const { data: dataResult, error: dataError } = await dataQuery;
-
-  //       if (dataError) {
-  //         setError(dataError);
-  //       } else {
-  //         setData(dataResult);
-  //       }
-  //     } catch (error) {
-  //       console.error("An error occurred:", error);
-  //       setError(error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [
-  //   entriesPerPage,
-  //   currentPage,
-  //   idNumber,
-  //   selectedSchoolYear,
-  //   selectedCollege,
-  //   isFilterToggle,
-  // ]);
+  const memoizedFetchTotalAmount = useMemo(
+    () => fetchTotalAmount,
+    [idNumber, selectedSchoolYear, selectedCollege, isFilterToggle]
+  );
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data, error, status, count } =
-          await fetchTransactionWithStudentData(
-            entriesPerPage,
-            currentPage,
-            idNumber,
-            selectedSchoolYear,
-            selectedCollege
-          );
-        if (error) {
-          setError(error);
-        } else {
-          // setTotalAmount(count * 100);
-          // console.log("data", data);
-          setData(data);
-        }
-      } catch (error) {
-        console.error("An error occurred:", error);
-        setError(error);
-      }
-    };
-
-    fetchData();
-  }, [
-    entriesPerPage,
-    currentPage,
-    idNumber,
-    selectedSchoolYear,
-    selectedCollege,
-    isFilterToggle,
-  ]);
+    // Call the memoized fetchData function when inputs change
+    memoizedFetchData();
+  }, [memoizedFetchData]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data, error, status, count } =
-          await fetchTransactionCountTotalData(
-            idNumber,
-            selectedSchoolYear,
-            selectedCollege
-          );
-        if (error) {
-          setError(error);
-        } else {
-          setTotalAmount(count * 100);
-        }
-      } catch (error) {
-        console.error("An error occurred:", error);
-        setError(error);
-      }
-    };
-
-    fetchData();
-  }, [idNumber, selectedSchoolYear, selectedCollege, isFilterToggle]);
+    // Call the memoized fetchTotalAmount function when inputs change
+    memoizedFetchTotalAmount();
+  }, [memoizedFetchTotalAmount]);
 
   const handleButtonDone = () => {
     setIsModal(false);
@@ -232,12 +191,11 @@ const TableData = () => {
   };
 
   return (
-    <div className="w-screen h-[100dvh] flex flex-col">
-      <Navbar />
+    <>
       <div
         className={`${
           isModal ? "overflow-hidden" : "overflow-auto"
-        } w-full flex flex-col py-3 px-4 mb-6 xl:py-5 sm:px-8 lg:px-16 xl:px-24 sm:rounded-lg`}>
+        } w-full flex flex-col px-5 md:px-0 py-3 md:py-7 sm:rounded-lg`}>
         <div className="w-full flex justify-between flex-col md:flex-row gap-y-[10px] md:gap-y-0 mb-[25px] select-none">
           <div className="flex items-center gap-x-[10px] md:gap-x-[25px]">
             <input
@@ -415,7 +373,7 @@ const TableData = () => {
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

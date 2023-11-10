@@ -1,10 +1,15 @@
-import Dashboard from "@/components/Dashboard/Dashboard";
-import Protected from "../../../Protected";
+import { Suspense } from "react";
 
-export default function DashboardRoute() {
+import Dashboard from "@/app/dashboard/Dashboard";
+import Protected from "@/../Protected";
+import LoadingThreeDots from "@/components/LoadingDots/LoadingThreeDots";
+
+export default async function DashboardRoute() {
   return (
-    <Protected>
-      <Dashboard />
-    </Protected>
+    <Suspense fallback={<LoadingThreeDots />}>
+      <Protected>
+        <Dashboard />
+      </Protected>
+    </Suspense>
   );
 }

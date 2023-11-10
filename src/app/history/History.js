@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import Navbar from "../Navbar/Navbar";
-import { fetchTransactionWithStudentData } from "@/app/data/transaction_data";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { fetchTransactionWithStudentData } from "@/data/transaction_data";
 
 const History = () => {
   const [idNumber, setIdNumber] = useState("");
@@ -15,125 +14,142 @@ const History = () => {
 
   const listInnerRef = useRef();
 
-  const fetchData = async () => {
-    try {
-      const { data, error, count } = await fetchTransactionWithStudentData(
-        itemsPerPage,
-        currPage,
-        idNumber || "",
-        "",
-        ""
-      );
-      setCountDataAvailable(count);
+  const fetchData = useMemo(
+    () => async () => {
+      try {
+        const { data, error, count } = await fetchTransactionWithStudentData(
+          itemsPerPage,
+          currPage,
+          idNumber || "",
+          "",
+          ""
+        );
+        setCountDataAvailable(count);
 
-      if (error) {
-        console.error("Error fetching student data:", error);
-        return;
-      }
+        if (error) {
+          console.error("Error fetching student data:", error);
+          return;
+        }
 
-      const updatedData = [...filteredData];
+        const updatedData = [...filteredData];
 
-      data.forEach((item) => {
-        const firstSemDate = new Date(item.first_sem_date);
-        const secondSemDate = item.second_sem
-          ? new Date(item.second_sem_date)
-          : null;
-        const dateKeyFirst = firstSemDate.toDateString();
-        const dateKeySecond = secondSemDate ? secondSemDate.toDateString() : "";
+        data.forEach((item) => {
+          const firstSemDate = new Date(item.first_sem_date);
+          const secondSemDate = item.second_sem
+            ? new Date(item.second_sem_date)
+            : null;
+          const dateKeyFirst = firstSemDate.toDateString();
+          const dateKeySecond = secondSemDate
+            ? secondSemDate.toDateString()
+            : "";
 
-        // Add the new item to the appropriate group
-        if (
-          secondSemDate &&
-          (item.second_sem === "true" || item.second_sem_time !== "")
-        ) {
-          const index = updatedData.findIndex((d) => d.date === dateKeySecond);
+          // Add the new item to the appropriate group
+          if (
+            secondSemDate &&
+            (item.second_sem === "true" || item.second_sem_time !== "")
+          ) {
+            const index = updatedData.findIndex(
+              (d) => d.date === dateKeySecond
+            );
+            if (index !== -1) {
+              updatedData[index].data.push({ ...item, semester: "Second" });
+            } else {
+              updatedData.push({
+                date: dateKeySecond,
+                data: [{ ...item, semester: "Second" }],
+              });
+            }
+          }
+
+          const index = updatedData.findIndex((d) => d.date === dateKeyFirst);
           if (index !== -1) {
-            updatedData[index].data.push({ ...item, semester: "Second" });
+            updatedData[index].data.push({ ...item, semester: "First" });
           } else {
             updatedData.push({
-              date: dateKeySecond,
-              data: [{ ...item, semester: "Second" }],
+              date: dateKeyFirst,
+              data: [{ ...item, semester: "First" }],
             });
           }
-        }
-
-        const index = updatedData.findIndex((d) => d.date === dateKeyFirst);
-        if (index !== -1) {
-          updatedData[index].data.push({ ...item, semester: "First" });
-        } else {
-          updatedData.push({
-            date: dateKeyFirst,
-            data: [{ ...item, semester: "First" }],
-          });
-        }
-      });
-
-      // Sort the data within each group by the newest time
-      updatedData.forEach((group) => {
-        group.data.sort((a, b) => {
-          const timeA =
-            a.semester === "First" ? a.first_sem_time : a.second_sem_time;
-          const timeB =
-            b.semester === "First" ? b.first_sem_time : b.second_sem_time;
-          return (
-            new Date(`1970-01-01T${timeB}`) - new Date(`1970-01-01T${timeA}`)
-          );
         });
-      });
 
-      // Set the filtered and sorted data
-      setFilteredData(updatedData);
+        // Sort the data within each group by the newest time
+        updatedData.forEach((group) => {
+          group.data.sort((a, b) => {
+            const timeA =
+              a.semester === "First" ? a.first_sem_time : a.second_sem_time;
+            const timeB =
+              b.semester === "First" ? b.first_sem_time : b.second_sem_time;
+            return (
+              new Date(`1970-01-01T${timeB}`) - new Date(`1970-01-01T${timeA}`)
+            );
+          });
+        });
 
-      const today = new Date();
-      const yesterday = new Date(today);
-      yesterday.setDate(today.getDate() - 1);
+        // Set the filtered and sorted data
+        setFilteredData(updatedData);
 
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+
+        const options = {
+          weekday: "long",
+          month: "long",
+          day: "2-digit",
+          year: "numeric",
+        };
+        const formattedCurrentDate = today.toLocaleDateString(
+          undefined,
+          options
+        );
+        const formattedYesterdayDate = yesterday.toLocaleDateString(
+          undefined,
+          options
+        );
+
+        setCurrentDate(formattedCurrentDate);
+        setYesterdayDate(formattedYesterdayDate);
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    },
+    [itemsPerPage, currPage, idNumber]
+  );
+
+  useEffect(() => {
+    // Call the memoized fetchData function when inputs change
+    fetchData();
+  }, [fetchData]); // Note that you can depend on the memoized function itself
+
+  // Function to format date string
+  const formatDateString = useMemo(
+    () => (dateString) => {
       const options = {
         weekday: "long",
         month: "long",
         day: "2-digit",
         year: "numeric",
       };
-      const formattedCurrentDate = today.toLocaleDateString(undefined, options);
-      const formattedYesterdayDate = yesterday.toLocaleDateString(
-        undefined,
-        options
-      );
-
-      setCurrentDate(formattedCurrentDate);
-      setYesterdayDate(formattedYesterdayDate);
-    } catch (error) {
-      console.error("An error occurred:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [idNumber, currPage]);
-
-  // Function to format date string
-  function formatDateString(dateString) {
-    const options = {
-      weekday: "long",
-      month: "long",
-      day: "2-digit", // Use 2-digit to include leading zeros
-      year: "numeric",
-    };
-    const date = new Date(dateString);
-    return date.toLocaleDateString(undefined, options);
-  }
+      const date = new Date(dateString);
+      return date.toLocaleDateString(undefined, options);
+    },
+    []
+  );
 
   // Function to format time string
-  function formatTimeString(timeString) {
-    const options = {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    };
-    const timeParts = timeString.split(":");
-    const time = new Date(0, 0, 0, timeParts[0], timeParts[1], timeParts[2]);
-    return time.toLocaleTimeString(undefined, options);
-  }
+  const formatTimeString = useMemo(
+    () => (timeString) => {
+      const options = {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      };
+      const timeParts = timeString.split(":");
+      const time = new Date(0, 0, 0, timeParts[0], timeParts[1], timeParts[2]);
+      return time.toLocaleTimeString(undefined, options);
+    },
+    []
+  );
 
   const handleChange = (event) => {
     const inputValue = event.target.value;
@@ -168,10 +184,10 @@ const History = () => {
   };
 
   return (
-    <div className="w-screen h-[100dvh] flex flex-col overflow-x-hidden ">
-      <Navbar />
-      <div className="flex flex-col py-3 px-5 sm:px-10 lg:px-52 2xl:px-[500px] font-Montserrat ">
-        <div className="flex flex-col md:flex-row gap-y-[25px] md:gap-y-0 md:gap-x-[25px] w-full mb-[25px] select-none">
+    <>
+      <div className="flex flex-col py-3 md:py-7 px-5 sm:px-10 lg:px-52 2xl:px-[350px] font-Montserrat">
+        {/* px-5 md:px-0 py-3 md:py-7 */}
+        <div className="self-end mb-[25px] select-none">
           <input
             value={idNumber}
             onChange={handleChange}
@@ -237,7 +253,7 @@ const History = () => {
           {countDataAvailable >= currPage * itemsPerPage && "Load More"}
         </button>
       </div>
-    </div>
+    </>
   );
 };
 

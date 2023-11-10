@@ -1,10 +1,14 @@
-import History from "@/components/History/History";
+import { Suspense } from "react";
+import History from "./History";
 import Protected from "../../../Protected";
+import LoadingThreeDots from "@/components/LoadingDots/LoadingThreeDots";
 
 export default function HistoryRoute() {
   return (
-    <Protected>
-      <History />
-    </Protected>
+    <Suspense fallback={<LoadingThreeDots />}>
+      <Protected>
+        <History />
+      </Protected>
+    </Suspense>
   );
 }
