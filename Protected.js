@@ -22,6 +22,7 @@ const Protected = ({ children }) => {
           console.error("Error fetching user:", error.message);
         } else {
           setUser(data.user);
+          console.log("user: ", data.user);
         }
       } catch (error) {
         console.error("An unexpected error occurred:", error);

@@ -237,103 +237,104 @@ const Settings = () => {
         className={`${
           currentUser.email === "lco@carsu.edu.ph" ? "py-12" : "py-32"
         } flex flex-col px-5 md:px-0 sm:px-10 lg:px-52 2xl:px-[350px] font-Montserrat gap-y-6`}>
-        {currentUser.email === "lco@carsu.edu.ph" && (
-          <>
-            <div>
-              <h1 className="font-semibold">Profile Information </h1>
-              <div className="w-full px-5 border border-green-700" />
-            </div>
-            <div className="flex flex-col space-y-5">
-              <div className="flex flex-col sm:flex-row justify-between md:items-center">
-                <h1>Current User Email </h1>
-                {!isEditEmail ? (
-                  <div className="flex items-center space-x-5">
-                    {currentUser && (
-                      <h1 className="font-semibold flex-grow">
-                        {currentUser.email}
-                      </h1>
-                    )}
-                    <button
-                      className="text-blue-500 text-[12px]"
-                      onClick={() => setIsEditEmail(!isEditEmail)}>
-                      Edit
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col md:flex-row md:items-center space-x-5 space-y-1 md:space-y-0">
-                    {/* <h1 className="font-semibold">{currentUser.email}</h1> */}
-                    <input
-                      type="email"
-                      name="email"
-                      value={email}
-                      onChange={handleEmailChange}
-                      required
-                      placeholder="Enter new email"
-                      className="w-full bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] px-5 py-2"
-                    />
-                    <div className="flex flex-row space-x-2 items-end justify-end">
-                      <button
-                        className={`text-[12px] text-left ${
-                          email === initialEmail || email.trim() === ""
-                            ? "text-gray-500 "
-                            : "text-purple-500 "
-                        }`}
-                        onClick={handleNewEmailSubmission}
-                        disabled={
-                          email === initialEmail || email.trim() === ""
-                        }>
-                        Change
-                      </button>
-                      <button
-                        className="text-red-500 text-[12px] text-left"
-                        onClick={() => setIsEditEmail(!isEditEmail)}>
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row justify-between md:items-center">
-                  <h1 className="">New Password</h1>
-                  <input
-                    type="password"
-                    name="new_password"
-                    value={newPassword}
-                    onChange={handleNewPasswordChange}
-                    required
-                    placeholder="Enter your new password"
-                    className="bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] px-5 py-2"
-                  />
-                </div>
-                <div className="flex flex-col sm:flex-row justify-between md:items-center">
-                  <h1 className="">Confirm New Password</h1>
-                  <input
-                    type="password"
-                    name="confirm_new_password"
-                    value={confirmNewPassword}
-                    onChange={handleConfirmNewPasswordChange}
-                    required
-                    placeholder="Re-enter your new password"
-                    className="bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] px-5 py-2"
-                  />
-                </div>
-                <div className="flex justify-between">
-                  <div />
+        {/* {currentUser.email === "lco@carsu.edu.ph" && ( */}
+        <>
+          <div>
+            <h1 className="font-semibold">Profile Information </h1>
+            <div className="w-full px-5 border border-green-700" />
+          </div>
+          <div className="flex flex-col space-y-5">
+            <div className="flex flex-col sm:flex-row justify-between md:items-center">
+              <h1>Current User Email </h1>
+              {!isEditEmail ? (
+                <div className="flex items-center space-x-5">
+                  {currentUser && (
+                    <h1 className="font-semibold flex-grow">
+                      {currentUser.email}
+                    </h1>
+                  )}
                   <button
-                    className={`rounded-[10px] border border-[#357112] px-5 py-2 ${
-                      newPassword === "" || confirmNewPassword === ""
-                        ? "bg-gray-300"
-                        : "bg-green-400"
-                    }`}
-                    onClick={handleNewPasswordSubmission}
-                    disabled={newPassword === "" || confirmNewPassword === ""}>
-                    Change Password
+                    className="text-blue-500 text-[12px]"
+                    onClick={() => setIsEditEmail(!isEditEmail)}>
+                    Edit
                   </button>
                 </div>
+              ) : (
+                <div className="flex flex-col md:flex-row md:items-center space-x-5 space-y-1 md:space-y-0">
+                  {/* <h1 className="font-semibold">{currentUser.email}</h1> */}
+                  <input
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={handleEmailChange}
+                    required
+                    placeholder="Enter new email"
+                    className="w-full bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] px-5 py-2"
+                  />
+                  <div className="flex flex-row space-x-2 items-end justify-end">
+                    <button
+                      className={`text-[12px] text-left ${
+                        email === initialEmail || email.trim() === ""
+                          ? "text-gray-500 "
+                          : "text-purple-500 "
+                      }`}
+                      onClick={handleNewEmailSubmission}
+                      disabled={email === initialEmail || email.trim() === ""}>
+                      Change
+                    </button>
+                    <button
+                      className="text-red-500 text-[12px] text-left"
+                      onClick={() => setIsEditEmail(!isEditEmail)}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row justify-between md:items-center">
+                <h1 className="">New Password</h1>
+                <input
+                  type="password"
+                  name="new_password"
+                  value={newPassword}
+                  onChange={handleNewPasswordChange}
+                  required
+                  placeholder="Enter your new password"
+                  className="bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] px-5 py-2"
+                />
+              </div>
+              <div className="flex flex-col sm:flex-row justify-between md:items-center">
+                <h1 className="">Confirm New Password</h1>
+                <input
+                  type="password"
+                  name="confirm_new_password"
+                  value={confirmNewPassword}
+                  onChange={handleConfirmNewPasswordChange}
+                  required
+                  placeholder="Re-enter your new password"
+                  className="bg-gray-200 bg-opacity-30 rounded-[10px] border border-[#357112] px-5 py-2"
+                />
+              </div>
+              <div className="flex justify-between">
+                <div />
+                <button
+                  className={`rounded-[10px] border border-[#357112] px-5 py-2 ${
+                    newPassword === "" || confirmNewPassword === ""
+                      ? "bg-gray-300"
+                      : "bg-green-400"
+                  }`}
+                  onClick={handleNewPasswordSubmission}
+                  disabled={newPassword === "" || confirmNewPassword === ""}>
+                  Change Password
+                </button>
               </div>
             </div>
-
+          </div>
+        </>
+        {/* )} */}
+        {currentUser.email === "lco@carsu.edu.ph" && (
+          <>
             <div className="flex flex-col space-y-5">
               <div>
                 <div className="flex flex-col items-start">

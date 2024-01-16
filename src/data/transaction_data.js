@@ -31,6 +31,7 @@ export const fetchTransactionWithStudentData = async (
   college
 ) => {
   try {
+    // console.log("college", college);
     const offset = (currentPage - 1) * entriesPerPage;
 
     // Fetch transaction data
