@@ -2,10 +2,10 @@
 import Navbar from "@/components/Navbar/Navbar";
 
 export const metadata = {
-  title: "Dashboard | LCO Fee Tracker",
-  description: "Dashboard | LCO Fee Tracker",
+  title: "Dashboard | Fee Tracker",
+  description: "Dashboard | Fee Tracker",
   openGraph: {
-    images: "/public/lco-logo-enhanced.svg",
+    images: "/public/logo-enhanced.png",
   },
 };
 

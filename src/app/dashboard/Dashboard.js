@@ -210,14 +210,14 @@ const Dashboard = () => {
       {!qrScannerVisible ? (
         <div className="flex flex-col md:hidden justify-center items-center mt-[40px] mb-[-10px] ">
           <Image
-            src="lco-logo-enhanced.svg"
-            alt="LCO Logo"
+            src="logo-enhanced.png"
+            alt="Logo"
             width={80}
             height={80}
           />
           <h1 className="flex flex-col space-y-[-2px] text-center">
             {" "}
-            <span className="text-md font-semibold">LCO Fee Tracker</span>
+            <span className="text-md font-semibold">Fee Tracker</span>
             <span className="tracking-wider font-mono font-[500] text-[8px]">
               Est. 2023-2024
             </span>
@@ -237,8 +237,8 @@ const Dashboard = () => {
               className="md:hidden self-center"
               onClick={() => setQrScannerVisible(!qrScannerVisible)}>
               <Image
-                src="lco-logo-enhanced.svg"
-                alt="LCO Logo"
+                src="logo-enhanced.png"
+                alt="Logo"
                 width={80}
                 height={80}
               />

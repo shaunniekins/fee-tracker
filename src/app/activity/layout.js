@@ -2,8 +2,8 @@
 import Navbar from "@/components/Navbar/Navbar";
 
 export const metadata = {
-  title: "Activity | LCO Fee Tracker",
-  description: "Activity | LCO Fee Tracker",
+  title: "Activity | Fee Tracker",
+  description: "Activity | Fee Tracker",
 };
 
 export default function ActivityLayout({ children }) {

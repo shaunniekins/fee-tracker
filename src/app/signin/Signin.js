@@ -81,17 +81,17 @@ const Signin = () => {
   return (
     <>
       {" "}
-      <title>Signin | LCO Fee Tracker</title>
+      <title>Signin | Fee Tracker</title>
       <meta name="description" content="Signin" key="desc" />
-      <link rel="icon" href="lco-logo-enhanced.svg" />
+      <link rel="icon" href="logo-enhanced.png" />
       {indicatorMsg && (
         <Indicator msg={indicatorMsg} status={indicatorStatus} />
       )}
       <div className="w-screen h-[100dvh] flex flex-col items-center justify-center font-Montserrat bg-[#357112] gap-y-10 px-5">
         <div className="flex flex-col items-center top-0 absolute m-5 md:mt-10 space-y-3">
           <img
-            src="lco-logo-enhanced.svg"
-            alt="LCO Logo"
+            src="logo-enhanced.png"
+            alt="Logo"
             // width={120}
             // height={120}
             className={"w-[80px] h-[80px] md:w-[120px] md:h-[120px]"}
@@ -102,7 +102,7 @@ const Signin = () => {
               Caraga State University
             </h3>
             <h2 className="font-Montserrat text-white text-md md:text-lg font-semibold tracking-wider">
-              LCO Fee Tracker
+              Fee Tracker
             </h2>
           </div>
           <div className="w-full md:w-[500px] px-5 border border-green-700" />

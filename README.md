@@ -1,12 +1,12 @@
-# LCO Fee Tracker Web Application
+# Fee Tracker Web Application
 
-The LCO Fee Tracker is a web application designed for LCO (Local Cable Operator) officers to manage and keep track of transactions related to LCO fees from students. With this application, LCO officers can easily record and access information about student payments, helping them keep track of who has paid, when the payment was made, and other relevant details.
+The Fee Tracker is a web application designed org officers to manage and keep track of transactions related to fees from students. With this application, officers can easily record and access information about student payments, helping them keep track of who has paid, when the payment was made, and other relevant details.
 
 ## Features
 
 **User Authentication:** Utilizes Supabase for user authentication, ensuring that only authorized users can access the application.
 
-**Transaction Management:** LCO officers can record transactions, including the student's details, payment amount, date, and other relevant information.
+**Transaction Management:** Org officers can record transactions, including the student's details, payment amount, date, and other relevant information.
 
 **Payment History:** The application maintains a comprehensive payment history, allowing users to review past transactions and payments.
 
@@ -22,19 +22,19 @@ The LCO Fee Tracker is a web application designed for LCO (Local Cable Operator)
 
 ## Getting Started
 
-Follow these steps to set up the LCO Fee Tracker web application locally:
+Follow these steps to set up the Fee Tracker web application locally:
 
 1. **Clone the Repository:**
 
 ```
-git clone https://github.com/shaunniekins/lco-fee-tracker.git
+git clone https://github.com/shaunniekins/fee-tracker.git
 ```
 
 2. **Install Dependencies:**
    Navigate to the project directory and install the required dependencies.
 
 ```
-cd lco-fee-tracker
+cd fee-tracker
 npm install
 ```
 
@@ -52,11 +52,11 @@ npm run dev
 ```
 
 5. **Access the Application:**
-   Open your web browser and go to http://localhost:8090/ to access the LCO Fee Tracker.
+   Open your web browser and go to http://localhost:8090/ to access the Fee Tracker.
 
 ## Usage
 
-Once the application is set up, LCO officers can:
+Once the application is set up, officers can:
 
 **Sign in:** Use their Supabase authentication credentials to log in to the application.
 

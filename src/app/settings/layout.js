@@ -2,8 +2,8 @@
 import Navbar from "@/components/Navbar/Navbar";
 
 export const metadata = {
-  title: "Settings | LCO Fee Tracker",
-  description: "Settings | LCO Fee Tracker",
+  title: "Settings | Fee Tracker",
+  description: "Settings | Fee Tracker",
 };
 
 export default function SettingsLayout({ children }) {

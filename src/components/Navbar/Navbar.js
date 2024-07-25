@@ -46,13 +46,13 @@ const Navbar = () => {
       <div className="justify-around items-center mt-2 hidden md:flex font-Montserrat select-none">
         <div className="flex items-center w-full">
           <Image
-            src="lco-logo-enhanced.svg"
-            alt="LCO Logo"
+            src="logo-enhanced.png"
+            alt="Logo"
             width={80}
             height={80}
           />
           <h1 className="flex flex-col text-start font-semibold space-y-[-5px]">
-            <span className="text-md">LCO Fee Tracker</span>
+            <span className="text-md">Fee Tracker</span>
             <span className="tracking-wider font-mono font-[500] text-[8px]">
               Est. 2023-2024
             </span>

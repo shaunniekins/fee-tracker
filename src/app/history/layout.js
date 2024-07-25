@@ -2,8 +2,8 @@
 import Navbar from "@/components/Navbar/Navbar";
 
 export const metadata = {
-  title: "History | LCO Fee Tracker",
-  description: "History | LCO Fee Tracker",
+  title: "History | Fee Tracker",
+  description: "History | Fee Tracker",
 };
 
 export default function HistoryLayout({ children }) {

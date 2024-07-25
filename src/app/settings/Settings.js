@@ -235,9 +235,9 @@ const Settings = () => {
       )}
       <div
         className={`${
-          currentUser.email === "lco@carsu.edu.ph" ? "py-12" : "py-32"
+          currentUser.email === "example@carsu.edu.ph" ? "py-12" : "py-32"
         } flex flex-col px-5 md:px-0 sm:px-10 lg:px-52 2xl:px-[350px] font-Montserrat gap-y-6`}>
-        {/* {currentUser.email === "lco@carsu.edu.ph" && ( */}
+        {/* {currentUser.email === "example@carsu.edu.ph" && ( */}
         <>
           <div>
             <h1 className="font-semibold">Profile Information </h1>
@@ -333,7 +333,7 @@ const Settings = () => {
           </div>
         </>
         {/* )} */}
-        {currentUser.email === "lco@carsu.edu.ph" && (
+        {currentUser.email === "example@carsu.edu.ph" && (
           <>
             <div className="flex flex-col space-y-5">
               <div>

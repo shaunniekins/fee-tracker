@@ -3,8 +3,8 @@ import { fetchTransactionDataForExport } from "@/data/transaction_data";
 export const handleExportToCSV = () => {
   const currentDate = new Date().toISOString().slice(0, 10);
   let dataVal, countVal;
-  const fileName = `[${currentDate}] - LCO Fee Student List.csv`;
-  const title = "LCO Fee Student List";
+  const fileName = `[${currentDate}] - Fee Student List.csv`;
+  const title = "Fee Student List";
 
   const fetchData = async () => {
     const {
